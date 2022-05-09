@@ -39,6 +39,7 @@ getCat<-function(om1, om2, path1, path2, alpha=0.05){
   #get all pvals and filter by alpha
   m<-nrow(om1)*nrow(om2)
   sp<-getPs(om1, om2, type= "Vec", pthresh=alpha)
+  sp<-sort(sp)
   k<-length(sp)
   grandH<- m-max(0, ceiling(max(1:k - (m-1:k) * sp / (alpha - sp))))
   
@@ -63,5 +64,6 @@ getCat<-function(om1, om2, path1, path2, alpha=0.05){
   sCat<-sCat[ordcat,]
 
   #remove large objects
+  gc()
   
   return(sCat)}
