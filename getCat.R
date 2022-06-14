@@ -2,9 +2,14 @@
 #'
 #' @description Calculates p-value categories from row data
 #'
-#' @param pathlist  \code{subject}.
+#' @param om1,om2 omics datasets
+#' 
+#' @param path1,path2  Indexes (or row-names) of the omics datasets which define 
+#' the pathways of interest corresponding to each omic dataset
+#' 
+#' @param gH H value provided as the output pf getH function
 #'
-#' @return A datafram including the name of pathways and corresponding adjusted p-values.
+#' @return A matrix of p-value categories where rows corresponds to the size of pathway
 #'
 #' @author Mitra Ebrahimpoor
 #'
@@ -25,7 +30,7 @@
 #' 
 #' 
 
-getCat<-function(om1, om2, path1, path2, alpha=0.05){
+getCat<-function(om1, om2, path1, path2, grandH, alpha=0.05){
   
   ##checks
   if(ncol(om1)!=ncol(om2)) stop("ncol of the matrices should math!")
@@ -34,15 +39,7 @@ getCat<-function(om1, om2, path1, path2, alpha=0.05){
   ##calculate the pval mat for selection 
   sq<-getPs(om1, om2, p1=path1, p2=path2, type= "Mat")
   gc()
-  
-  ##calculation of grandH
-  #get all pvals and filter by alpha
-  m<-nrow(om1)*nrow(om2)
-  sp<-getPs(om1, om2, type= "Vec", pthresh=alpha)
-  sp<-sort(sp)
-  k<-length(sp)
-  grandH<- m-max(0, ceiling(max(1:k - (m-1:k) * sp / (alpha - sp))))
-  
+
   ##calculate p-value categories
   sq.cat<-ceiling(sq[]*grandH/alpha)
   
