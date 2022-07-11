@@ -1,18 +1,21 @@
 #' @title Calculates p-value by spiliting 
 #'
-#' @description Calculate p-values for the correlation of two matrices by splitting the rows
-#' to (25 or less) smaller blocks. If the size is larger than 1000X1000, an ff_matrix is created.
+#' @description Calculate p-value matrix of Pearson correlation test for two matrices by splitting 
+#' the rows to (25 or less) smaller blocks. If the size is larger than 1000X1000,
 #' 
-#' @param om1,om2  Matrices.
+#' @param om1,om2  Two omics datasets where rows are probs and columns are samples.
 #'
-#' @param p1,p2  Optional argument to select pathways based on indexes of rows of each matrix.
+#' @param p1,p2  Optional argument to select pathways based on indexes (or row-names) of the omics datasets
+#' which define the pathways of interest corresponding to each omic dataset
 #' 
-#' @param type  Two options are available. Mat: Calculate the correlation of subsets and return a matrix; Vec: calculate the
-#' full correlation matrix, subset by the given threshold and return a vector.
+#' @param type  Two options are available. Mat: Calculate the correlation of subsets and return a
+#' matrix; Vec: calculate the full correlation matrix, subset by the given threshold and return a
+#' vector of p-values.
 #' 
-#' @param pthresh The threshold by which the p-values are filtered (p>pthresh is removed). Default is 0.05
+#' @param pthresh The threshold by which the p-values are filtered (p>pthresh is removed).
+#' Default is 0.05
 #' 
-#' @return Either a matrix or vector, as determined by type parameter.
+#' @return Either an ff_matrix or a vector, as determined by type parameter.
 #'
 #' @author Mitra Ebrahimpoor
 #'
@@ -25,10 +28,11 @@
 #' 
 #' 
 
-getPs<-function(om1, om2, p1, p2,
+corPs<-function(om1, om2, p1, p2,
                 type=c("Mat","Vec"), pthresh=0.05){
    
-   #pval from cor
+   
+  #pval from pearson cor
     cor2p<-function(r,n=ncol(om1)){
       t<-(r*sqrt(n-2))/sqrt(1-r^2)
       p<-2*(1 - pt(abs(t),(n-2)))
@@ -63,14 +67,13 @@ getPs<-function(om1, om2, p1, p2,
     ## calculate correlation 
     ## convert correlation to p-value
     ## store them in the vector 
-    cat("Calculating H. \n")
     for (i in 1:nrow(COMBS)) {
       G1<-SPLIT1[[COMBS[i,1]]]
       G2<-SPLIT2[[COMBS[i,2]]]
       flush.console()
       COR<-cor(t(om1[G1,]), t(om2[G2,]) )
       CORP<-cor2p(COR)
-      CORP<-CORP[CORP<0.05]
+      CORP<-CORP[CORP<pthresh]
       corOUT<-c(corOUT,CORP)
       COR<-NULL
       gc()

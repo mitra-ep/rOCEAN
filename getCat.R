@@ -1,15 +1,18 @@
-#' @title Calculates p-value categories from row data  
+#' @title Calculates categories for a selected ROI 
 #'
 #' @description Calculates p-value categories from row data
 #'
-#' @param om1,om2 omics datasets
+#' @param ps Matrix of p-values for the region of interest, representing association between 
+#' two omics pathways
 #' 
-#' @param path1,path2  Indexes (or row-names) of the omics datasets which define 
-#' the pathways of interest corresponding to each omic dataset
-#' 
-#' @param gH H value provided as the output pf getH function
+#' @param gCT Parameters of the global closed testing provided as the output of simesCT function
 #'
-#' @return A matrix of p-value categories where rows corresponds to the size of pathway
+#' @param m Size of the original p-value matrix (number of rows × number of columns) before 
+#' selection of the region based on pathways.
+#' 
+#' @param scale Scale of the quantification, a character string. Possible choices are "col" and "row".
+#' 
+#' @return A matrix of categories where rows corresponds to the size of intersection
 #'
 #' @author Mitra Ebrahimpoor
 #'
@@ -25,26 +28,23 @@
 #'
 #'
 #' @export
-#'
-#' @importFrom ff ff
 #' 
 #' 
 
-getCat<-function(om1, om2, path1, path2, grandH, alpha=0.05){
+getCat<-function(ps, gCT, m, scale=c("col","row")){
   
-  ##checks
-  if(ncol(om1)!=ncol(om2)) stop("ncol of the matrices should math!")
-  if(missing(path1)|missing(path2)) stop("Pathway indexes are not defined.")
+  #parameters
+  grandH=gCT[1]
+  z=gCT[2]
+  alpha=gCT[3]
   
-  ##calculate the pval mat for selection 
-  sq<-getPs(om1, om2, p1=path1, p2=path2, type= "Mat")
-  gc()
-
-  ##calculate p-value categories
-  sq.cat<-ceiling(sq[]*grandH/alpha)
+  ##apply inversion if required
+  if(scal=="row") sq.cat<-ceiling(ps[]*grandH/alpha)
+  if(scal=="col") {
+    ps<-t(ps)
+    sq.cat<-ceiling(ps[]*grandH/alpha)}
   
   #get the size of categories from concentrations
-  z<-ifelse(grandH==m, 0, min(which(sp*grandH <= (1:k - m + grandH + 1) * alpha)))
   catSize<-min(nrow(sq)*ncol(sq), max(unlist(sq.cat)), z-m+grandH+1)
   
   cat("Creating category marix. \n")
