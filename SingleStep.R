@@ -1,6 +1,7 @@
 #' @title Single step algorithm 
 #'
-#' @description Calculates a heuristic and an upper-bound for the number of FD
+#' @description Calculates a heuristic and an upper-bound for the number of FD based on the algorithm
+#' introduced in paper
 #'
 #' @param sCat  Category matrix, output of getCat function
 #'  
@@ -17,14 +18,12 @@
 #' @examples
 #'
 #' @export
-#'
-#' @importFrom ff ff
 #' 
 #' 
 
 
 ##simple single step
-singleStep<-function(sCat){
+ss<-function(sCat){
   
   #calculate cumsum over columns for customized mat
   cumcat.p<-apply(sCat, 2, cumsum)

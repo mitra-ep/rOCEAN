@@ -2,9 +2,9 @@
 #'
 #' @description Calculate number of false discoveries over pairs
 #'
-#' @param p  vector of p-values
+#' @param p  vector of p-values in the region of interest
 #' 
-#' @param gCT Parameters of global closed testing as returned by getH
+#' @param gCT Parameters of the global closed testing provided as the output of simesCT function 
 #'  
 #' @return Number of false discoveries among pairs
 #'
@@ -22,10 +22,12 @@
 #' 
 #' 
 
-
-##simple single step
-pairFD<-function(p, gCT, aplpha){
+pairFD<-function(p, gCT){
   
+  #parameters
+  grandH=gCT[1]
+  alpha=gCT[3]
+
   #sort pvals
   sp<-sort(tps)
   #create vector of hp/alpha
@@ -33,7 +35,8 @@ pairFD<-function(p, gCT, aplpha){
   d<-max(sapply(1:length(tp), function(u) 1-u+sum(tp<u) ))
   
   #fdp
-  fdp<-d/length(p)
-  ###items to return
-  return(list("heuristic"=Hu, "bound"=Bo))
+  fd<-length(p)-d
+
+  ###return
+  return(fd)
 }
