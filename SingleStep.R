@@ -21,9 +21,7 @@
 #' 
 #' 
 
-
-##simple single step
-ss<-function(sCat){
+SS<-function(sCat){
   
   #calculate cumsum over columns for customized mat
   cumcat.p<-apply(sCat, 2, cumsum)
