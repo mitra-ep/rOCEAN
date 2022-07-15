@@ -21,17 +21,81 @@
 #' 
 #' 
 
-SS<-function(sCat){
+singleStep<-function(sCat, B){
   
-  #calculate cumsum over columns for customized mat
-  cumcat.p<-apply(sCat, 2, cumsum)
-  #get R for heuristic
-  getRp<-apply(cumcat.p, 1, function(b) any(b>=1:ncol(sCat)))
+  ##set B if missing
+  if(missing(B)) B=rep(1,nrow(sCat))
   
-  #calculate cumsum over columns for customized mat
-  cumcat.s<-apply(apply(sCat, 2, sort), 2, cumsum) 
-  #get R for bound
-  getRs<-apply(cumcat.s, 1, function(b) any(b>=1:ncol(sCat)))  
+  
+  #B is full-size
+  if(length(B)==nrow(sCat)) {
+    #one set selected
+    if(sum(B)==1)  type="single"
+    #all sets mentioned in B
+    if(sum(B)>1) type="full"
+  }
+  
+  #B is not full-size
+  if(length(B)<nrow(sCat)){
+    #one set selected
+    if(sum(B)==0 & nrow(sCat)-length(B)==1){
+      type="single"}else
+        type="partial"
+  }
+  
+  
+  #only one single row selected
+  if(type=="single"){
+    #get R for heuristic
+    submatp<-sCat[which(B==1),]
+    getRp<-any(submatp>=1:ncol(sCat))
+    Hu<-ifelse(getRp,1,0)  
+    
+    #get R for bound
+    submats<-sCat[which(B==1),]
+    getRs<-any(submatp>=1:ncol(sCat))
+    Bo<-ifelse(getRs,1,0)     }  
+  
+  #a subset of rows selected and some not changed
+  if(type=="partial"){
+    #subscripts where no action required
+    Bfix<-c(B, rep(2,nrow(sCat)-length(B) ) )
+    
+    #create a new matrix by removing rows based on B
+    submatp<-rbind(sCat[which(B==1),], sCat[which(Bfix==2),])
+    
+    if(sum(Bfix==2)>1) submats<-rbind(sCat[which(B==1),], apply(sCat[which(Bfix==2),], 2, sort))
+    if(sum(Bfix==2)==1) submats<-rbind(sCat[which(B==1),], sCat[which(Bfix==2),])
+    
+    #calculate cumsum over columns for customized mat
+    cumcat.p<-apply(submatp, 2, cumsum)
+    #get R for heuristic
+    getRp<-apply(cumcat.p, 1, function(b) any(b>=1:ncol(sCat)))
+    
+    #calculate cumsum over columns for customized mat
+    cumcat.s<-apply(apply(submats, 2, sort), 2, cumsum) 
+    #get R for bound
+    getRs<-apply(cumcat.s, 1, function(b) any(b>=1:ncol(sCat)))
+    
+  }
+  
+  #all rows are indexed in B
+  if(type=="full"){
+    
+    #create a new matrix by removing rows based on B
+    submatp<-sCat[which(B==1),]
+    submats<-sCat[which(B==1),]
+    
+    #calculate cumsum over columns for customized mat
+    cumcat.p<-apply(submatp, 2, cumsum)
+    #get R for heuristic
+    getRp<-apply(cumcat.p, 1, function(b) any(b>=1:ncol(sCat)))
+    
+    #calculate cumsum over columns for customized mat
+    cumcat.s<-cumcat.s<-apply(apply(submats, 2, sort), 2, cumsum) 
+    #get R for bound
+    getRs<-apply(cumcat.s, 1, function(b) any(b>=1:ncol(sCat)))  
+  }
   
   ##calculate the heuristic for all cases
   #extreme cases

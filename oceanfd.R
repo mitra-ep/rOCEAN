@@ -29,9 +29,7 @@
 #' 
 #' 
 
-
-##simple single step
-oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col")){
+oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
   
   #parameters
   grandH=gCT[1]
@@ -45,34 +43,60 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col")){
   #FD over pairs
   if("pair" %in% scale){
    
-    #calculate vector of pvalues
+    #calculate vector of p values
     ps<-corPs(om1, om2, p1, p2, type="Vec", pthresh=alpha)
     
     #run pairwise algorithm
-    fd<-pairFD(p, gCT, aplpha)
+    fd<-pairFD(ps, gCT, aplpha)
     
-    }else{
-    #FD over rows or columns
-        #calculate matrix of pvalues
-        ps<-corPs(om1, om2, p1, p2, type="Mat")
-          
-        #get corresponding category matrix
-        if("row" %in% scale){
-        sCat<-getCat(ps, gCT, m, scale="row") }
-          
-        if("col" %in% scale){
-        sCat<-getCat(ps, gCT, m, scale="col") }
+  }
+  
+  if(sum(c("row","col") %in% scale)>=1){
+    #calculate matrix of p values
+    ps<-corPs(om1, om2, p1, p2, type="Mat")}
+    
+  if("row" %in% scale){
+      sCatr<-getCat(ps, gCT, m, scale="row")
+      
+      #run single step algorithm
+      ssr<-singleStep(sCatr)
+      
+      #fd if conclusive result                    
+      if(ssr$Bo-1==ssr$heuristic) fdr=ssr$heuristic 
+  
+      #fd if inconclusive and BB run   
+      if(ssr$Bo-1!=ssr$heuristic & BB==TRUE) {
+        bboutr<-runbab(sCatr)
+        fdr=bboutr$FD
+      }
+      
+      #return inconclusive
+      if(ssr$Bo-1!=ssr$heuristic & BB==FALSE) fdr=ssr
+     }
+      
+      
+    if("col" %in% scale){
+        sCatc<-getCat(ps, gCT, m, scale="col")
         
         #run single step algorithm
-        fd<-rcFD(sCat)
-                            
-    if(fd$Bo-1==fd$heuristic) fd<-fd$heuristic 
+        ssc<-singleStep(sCatc)
         
-    if(fd$Bo-1!=fd$heuristic & BB==TRUE) fd<-BB()
+        #fd if conclusive result                    
+        if(ssc$Bo-1==ssc$heuristic) fdc=ssc$heuristic   
+          
+        #fd if inconclusive and BB run   
+
+        if(ssc$Bo-1!=ssc$heuristic & BB==TRUE) {
+          bboutc<-runbab(sCatc)
+          fdc=bboutc$FD
+          } 
+          
+        #return inconclusive
+          if(ssc$Bo-1!=ssc$heuristic & BB==FALSE) fdc=ssc 
+         }
   
-    if(fd$Bo-1!=fd$heuristic & BB==FALSE) fd<-fd  
-    }
-  
-  ###items to return
-  return(fd)
-}
+  #arrange items to return
+
+    ###items to return
+    return(fd)
+  }

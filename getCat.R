@@ -39,15 +39,14 @@ getCat<-function(ps, gCT, m, scale=c("col","row")){
   alpha=gCT[3]
   
   ##apply inversion if required
-  if(scal=="row") sq.cat<-ceiling(ps[]*grandH/alpha)
-  if(scal=="col") {
+  if(scale=="row") sq.cat<-ceiling(ps[]*grandH/alpha)
+  if(scale=="col") {
     ps<-t(ps)
     sq.cat<-ceiling(ps[]*grandH/alpha)}
   
   #get the size of categories from concentrations
-  catSize<-min(nrow(sq)*ncol(sq), max(unlist(sq.cat)), z-m+grandH+1)
+  catSize<-min(nrow(sq.cat)*ncol(sq.cat), max(unlist(sq.cat)), z-m+grandH+1)
   
-  cat("Creating category marix. \n")
   #calculate cumulative num in categories
   sCat<-t(apply(sq.cat, 1, function(x) {
     out<-numeric(catSize)
@@ -59,7 +58,9 @@ getCat<-function(ps, gCT, m, scale=c("col","row")){
   #sort rows
   ordcat<-order(apply(sCat, 1, function(row) max(row / 1:length(row))))
   sCat<-sCat[ordcat,]
-
+  #message when done
+  cat("Categories marixcreated. \n")
+  
   #remove large objects
   gc()
   
