@@ -47,7 +47,9 @@ getCat<-function(ps, gCT, m, scale=c("col","row")){
   #get the size of categories from concentrations
   catSize<-min(nrow(sq.cat)*ncol(sq.cat), max(unlist(sq.cat)), z-m+grandH+1)
   
+  
   #calculate cumulative num in categories
+  if(catSize>=2){
   sCat<-t(apply(sq.cat, 1, function(x) {
     out<-numeric(catSize)
     for (i in x)
@@ -58,8 +60,12 @@ getCat<-function(ps, gCT, m, scale=c("col","row")){
   #sort rows
   ordcat<-order(apply(sCat, 1, function(row) max(row / 1:length(row))))
   sCat<-sCat[ordcat,]
+    }
+  
+  if(catSize<2) sCat<-matrix(data=0,nrow=nrow(ps), ncol=catSize+1)
+  
   #message when done
-  cat("Categories marixcreated. \n")
+  cat("Categories matrix created. \n")
   
   #remove large objects
   gc()
