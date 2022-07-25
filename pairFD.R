@@ -29,7 +29,8 @@ pairFD<-function(p, gCT){
   alpha=gCT[3]
 
   #sort pvals
-  sp<-sort(tps)
+  sp<-sort(p)
+  
   #create vector of hp/alpha
   tp<-(grandH*sp)/alpha
   d<-max(sapply(1:length(tp), function(u) 1-u+sum(tp<u) ))

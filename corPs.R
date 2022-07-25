@@ -48,12 +48,19 @@ corPs<-function(om1, om2, p1, p2,
     
     if(type=="Vec"){
     
-    #make an empty vector
-    corOUT<-c()
+    #remove all zero rows
+    keep1<-which(rowSums(om2)!=0)
+    om1<-om1[keep1,]
+   
+    keep2<-which(rowSums(om2)!=0)
+    om2<-om2[keep2,]
     
     #choose number of splits
     s1<-mfact(nrow(om1))
     s2<-mfact(nrow(om2))
+    
+    #make an empty vector
+    corOUT<-ff::ff(vmode = "single", length=0)
     
     #split row numbers into several block
     SPLIT1<-split(1:nrow(om1), rep(1:s1, each = nrow(om1)/s1))
@@ -74,10 +81,12 @@ corPs<-function(om1, om2, p1, p2,
       COR<-cor(t(om1[G1,]), t(om2[G2,]) )
       CORP<-cor2p(COR)
       CORP<-CORP[CORP<pthresh]
-      corOUT<-c(corOUT,CORP)
+      corOUT<-c(corOUT[],CORP)
       COR<-NULL
       gc()
-    }  }
+    } 
+    
+    }
     
     if(type=="Mat"){
       
@@ -103,7 +112,7 @@ corPs<-function(om1, om2, p1, p2,
       ## store them in the matrix 
       
       ##make an empty matrix 
-      corOUT<-ff(vmode = "single", dim = c(nrow(sm1), nrow(sm2)))
+      corOUT<-ff::ff(vmode = "single", dim = c(nrow(sm1), nrow(sm2)))
       cat("Generating correlation matrix. \n")
       for (i in 1:nrow(COMBS)) {
         G1<-SPLIT1[[COMBS[i,1]]]

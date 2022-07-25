@@ -44,10 +44,10 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
   if("pair" %in% scale){
    
     #calculate vector of p values
-    ps<-corPs(om1, om2, p1, p2, type="Vec", pthresh=alpha)
+    pps<-corPs(om1, om2, p1, p2, type="Vec", pthresh=alpha)
     
     #run pairwise algorithm
-    fd<-pairFD(ps, gCT, aplpha)
+    fd<-pairFD(pps, gCT, aplpha)
     
   }
   
@@ -62,16 +62,16 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
       ssr<-singleStep(sCatr)
       
       #fd if conclusive result                    
-      if(ssr$Bo-1==ssr$heuristic) fdr=ssr$heuristic 
+      #if(ssr$Bo-1==ssr$heuristic) fdr=ssr$heuristic 
   
       #fd if inconclusive and BB run   
-      if(ssr$Bo-1!=ssr$heuristic & BB==TRUE) {
-        bboutr<-runbab(sCatr)
-        fdr=bboutr$FD
-      }
+     # if(ssr$Bo-1!=ssr$heuristic & BB==TRUE) {
+        #bboutr<-runbab(sCatr)
+        #fdr=bboutr$FD
+      #}
       
       #return inconclusive
-      if(ssr$Bo-1!=ssr$heuristic & BB==FALSE) fdr=ssr
+      #if(ssr$Bo-1!=ssr$heuristic & BB==FALSE) fdr=ssr
      }
       
       
@@ -82,21 +82,21 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
         ssc<-singleStep(sCatc)
         
         #fd if conclusive result                    
-        if(ssc$Bo-1==ssc$heuristic) fdc=ssc$heuristic   
+       # if(ssc$Bo-1==ssc$heuristic) fdc=ssc$heuristic   
           
         #fd if inconclusive and BB run   
 
-        if(ssc$Bo-1!=ssc$heuristic & BB==TRUE) {
-          bboutc<-runbab(sCatc)
-          fdc=bboutc$FD
-          } 
+       # if(ssc$Bo-1!=ssc$heuristic & BB==TRUE) {
+       #   bboutc<-runbab(sCatc)
+       #   fdc=bboutc$FD
+      #    } 
           
         #return inconclusive
-          if(ssc$Bo-1!=ssc$heuristic & BB==FALSE) fdc=ssc 
+        #  if(ssc$Bo-1!=ssc$heuristic & BB==FALSE) fdc=ssc 
          }
   
   #arrange items to return
-
+    
     ###items to return
-    return(fd)
+    return(list("fd"=fd,"SSr"=ssr,"SSc"=ssc))
   }

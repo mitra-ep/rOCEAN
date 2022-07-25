@@ -34,17 +34,16 @@ simesCT<-function(om1, om2, alpha=0.05){
   ##calculation of grandH
   
   #get all pvals after filtering by alpha
-  m<-nrow(om1)*nrow(om2)
+  m<-as.numeric(nrow(om1))*as.numeric(nrow(om2))
   sp<-corPs(om1, om2, type= "Vec", pthresh=alpha)
-  sp<-sort(sp)
+  sp<-sort(sp[])
   k<-length(sp)
   grandH<- m-max(0, ceiling(max(1:k - (m-1:k) * sp / (alpha - sp))))
 
+  #get size of concentration set
+  z<-ifelse(grandH==m, 0, min(which(sp*grandH <= (1:k - m + grandH + 1) * alpha)))
+    
   #remove large objects
   gc()
-  
-  #get size of concentration set
-  concp<-ifelse(grandH==m, 0, min(which(sp*grandH <= (1:k - m + grandH + 1) * alpha)))
-  z<-sum(sp <= concp)   
   
   return(c(grandH,z,alpha) )}
