@@ -45,7 +45,7 @@ getCat<-function(ps, gCT, m, scale=c("col","row")){
     sq.cat<-ceiling(ps[]*grandH/alpha)}
   
   #get the size of categories from concentrations
-  catSize<-min(nrow(sq.cat)*ncol(sq.cat), max(unlist(sq.cat)), z-m+grandH+1)
+  catSize<-min(as.numeric(nrow(sq.cat))*as.numeric(nrow(sq.cat)), max(unlist(sq.cat)), z-m+grandH+1)
   
   
   #calculate cumulative num in categories
@@ -62,7 +62,7 @@ getCat<-function(ps, gCT, m, scale=c("col","row")){
   sCat<-sCat[ordcat,]
     }
   
-  if(catSize<2) sCat<-matrix(data=0,nrow=nrow(ps), ncol=catSize+1)
+  if(catSize<2) sCat<-matrix(data=0,nrow=as.numeric(nrow(ps)), ncol=catSize+1)
   
   #message when done
   cat("Categories matrix created. \n")

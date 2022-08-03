@@ -35,7 +35,7 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
   grandH=gCT[1]
   z=gCT[2]
   alpha=gCT[3]
-  m=nrow(om1)*nrow(om2)
+  m=as.numeric(nrow(om1))*as.numeric(nrow(om2))
   
   if(missing(scale)){
     scale=c("pair","row","col")
@@ -44,12 +44,14 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
   if("pair" %in% scale){
    
     #calculate vector of p values
-    pps<-corPs(om1, om2, p1, p2, type="Vec", pthresh=alpha)
+    cat("Calculating P vector. \n")
+    pps<-corPs(om1, om2, p1, p2, type="Vec", pthresh=0.01)
     
     #run pairwise algorithm
-    fd<-pairFD(pps, gCT, aplpha)
+    cat("Calculating FD for pairs. \n")
+    pfd<-pairFD(pps, gCT)
     
-  }
+  }else{ pfd<-NA }
   
   if(sum(c("row","col") %in% scale)>=1){
     #calculate matrix of p values
@@ -62,17 +64,17 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
       ssr<-singleStep(sCatr)
       
       #fd if conclusive result                    
-      #if(ssr$Bo-1==ssr$heuristic) fdr=ssr$heuristic 
+      if(ssr$Bo-1==ssr$heuristic) rfd=ssr$heuristic 
   
       #fd if inconclusive and BB run   
-     # if(ssr$Bo-1!=ssr$heuristic & BB==TRUE) {
-        #bboutr<-runbab(sCatr)
-        #fdr=bboutr$FD
-      #}
+     if(ssr$Bo-1!=ssr$heuristic & BB==TRUE) {
+        bboutr<-runbab(sCatr)
+        rfd=bboutr$FD
+      }
       
       #return inconclusive
-      #if(ssr$Bo-1!=ssr$heuristic & BB==FALSE) fdr=ssr
-     }
+      if(ssr$Bo-1!=ssr$heuristic & BB==FALSE) rfd=ssr$heuristic 
+     } else{ rfd<-NA }
       
       
     if("col" %in% scale){
@@ -82,21 +84,21 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
         ssc<-singleStep(sCatc)
         
         #fd if conclusive result                    
-       # if(ssc$Bo-1==ssc$heuristic) fdc=ssc$heuristic   
+       if(ssc$Bo-1==ssc$heuristic) cfd=ssc$Bo-1   
           
         #fd if inconclusive and BB run   
 
-       # if(ssc$Bo-1!=ssc$heuristic & BB==TRUE) {
-       #   bboutc<-runbab(sCatc)
-       #   fdc=bboutc$FD
-      #    } 
+       if(ssc$Bo-1!=ssc$heuristic & BB==TRUE) {
+         bboutc<-runbab(sCatc)
+         cfd=bboutc$FD
+          } 
           
         #return inconclusive
-        #  if(ssc$Bo-1!=ssc$heuristic & BB==FALSE) fdc=ssc 
-         }
+        if(ssc$Bo-1!=ssc$heuristic & BB==FALSE) cfd=ssc$Bo-1  
+         } else{ cfd<-NA }
   
   #arrange items to return
     
     ###items to return
-    return(list("fd"=fd,"SSr"=ssr,"SSc"=ssc))
+    return(list("fd"=pfd,"SSr"=rfd,"SSc"=cfd))
   }
