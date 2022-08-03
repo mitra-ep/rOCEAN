@@ -33,7 +33,9 @@ pairFD<-function(p, gCT){
   
   #create vector of hp/alpha
   tp<-(grandH*sp)/alpha
-  d<-max(sapply(1:length(tp), function(u) 1-u+sum(tp<u) ))
+  u<-1:length(tp)
+  uval<-1-u+sum(tp<u)
+  d<-max(uval)
   
   #fdp
   fd<-length(p)-d
