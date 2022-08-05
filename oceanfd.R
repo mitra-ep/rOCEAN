@@ -100,5 +100,7 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
   #arrange items to return
     
     ###items to return
-    return(list("fd"=pfd,"SSr"=rfd,"SSc"=cfd))
+    return(list("fd"=pfd/m,
+                "SSr"=rfd/length(p1),
+                "SSc"=cfd/length(p2)))
   }
