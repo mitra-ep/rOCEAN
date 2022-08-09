@@ -45,13 +45,15 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
    
     #calculate vector of p values
     cat("Calculating P vector. \n")
-    pps<-corPs(om1, om2, p1, p2, type="Vec", pthresh=0.001)
+    pps<-corPs(om1, om2, p1, p2, type="Vec")
     
     #run pairwise algorithm
     cat("Calculating FD for pairs. \n")
     pfd<-pairFD(pps, gCT)
     
   }else{ pfd<-NA }
+  
+  gc()
   
   if(sum(c("row","col") %in% scale)>=1){
     #calculate matrix of p values
@@ -68,7 +70,7 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
   
       #fd if inconclusive and BB run   
      if(ssr$bound-1!=ssr$heuristic & BB==TRUE) {
-        bboutr<-runbab(sCatr)
+        bboutr<-runbab(sCatr,ssr$heuristic,ssr$bound)
         rfd=bboutr$FD
       }
       
@@ -89,7 +91,7 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
         #fd if inconclusive and BB run   
 
        if(ssc$bound-1!=ssc$heuristic & BB==TRUE) {
-         bboutc<-runbab(sCatc)
+         bboutc<-runbab(sCatc,ssc$heuristic,ssc$bound)
          cfd=bboutc$FD
           } 
           
@@ -100,7 +102,7 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
   #arrange items to return
     
     ###items to return
-    return(list("fd"=pfd/m,
+    return(c("pairfd"=pfd/m,
                 "SSr"=rfd/length(p1),
                 "SSc"=cfd/length(p2)))
   }
