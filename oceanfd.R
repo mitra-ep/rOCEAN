@@ -46,11 +46,13 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
    
     #calculate vector of p values
     cat("Calculating P vector. \n")
-    pps<-corPs(om1, om2, p1, p2, type="Vec")
-    
+    pps<-corPs(om1, om2, p1, p2, type="Vec",pthresh =concp )
+    if(length(pv)==0) pfd=m
+
     #run pairwise algorithm
+    if(length(pv)>0){
     cat("Calculating FD for pairs. \n")
-    pfd<-pairFD(pps, gCT)
+    pfd<-pairFD(pps, gCT)}
     
   }else{ pfd<-NA }
   
@@ -58,7 +60,7 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
   
   if(sum(c("row","col") %in% scale)>=1){
     #calculate matrix of p values
-    ps<-corPs(om1, om2, p1, p2, type="Mat", pthresh=concp)}
+    ps<-corPs(om1, om2, p1, p2, type="Mat")}
     
   if("row" %in% scale){
       sCatr<-getCat(ps, gCT, m, scale="row")
@@ -67,19 +69,19 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
       ssr<-singleStep(sCatr)
       
       #fd if conclusive result                    
-      if(ssr$bound-1==ssr$heuristic) rfd=ssr$heuristic 
+      rfd=ssr$bound-1
+      
+      #fd if inconclusive and run BB    
+      if(BB==TRUE) {
+        if(ssr$bound-1!=ssr$heuristic){ 
+          bboutr<-runbab(sCatr,ssr$heuristic,ssr$bound)
+          brfd=bboutr$FD
+          }else brfd=NA
+         } 
+           } else{ rfd=NA
+                   if(BB==TRUE) brfd=NA}
   
-      #fd if inconclusive and BB run   
-     if(ssr$bound-1!=ssr$heuristic & BB==TRUE) {
-        bboutr<-runbab(sCatr,ssr$heuristic,ssr$bound)
-        rfd=bboutr$FD
-      }
-      
-      #return inconclusive
-      if(ssr$bound-1!=ssr$heuristic & BB==FALSE) rfd=ssr$heuristic 
-     } else{ rfd<-NA }
-      
-      
+
     if("col" %in% scale){
         sCatc<-getCat(ps, gCT, m, scale="col")
         
@@ -87,23 +89,36 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
         ssc<-singleStep(sCatc)
         
         #fd if conclusive result                    
-       if(ssc$bound-1==ssc$heuristic) cfd=ssc$bound-1   
+        cfd=ssc$bound-1   
           
-        #fd if inconclusive and BB run   
-
-       if(ssc$bound-1!=ssc$heuristic & BB==TRUE) {
-         bboutc<-runbab(sCatc,ssc$heuristic,ssc$bound)
-         cfd=bboutc$FD
+        #fd if inconclusive and run BB    
+        if(BB==TRUE) {
+          if(ssc$bound-1!=ssc$heuristic){ 
+            bboutc<-runbab(sCatc,ssc$heuristic,ssc$bound)
+            bcfd=bboutc$FD
+            }else bcfd=NA
           } 
-          
-        #return inconclusive
-        if(ssc$bound-1!=ssc$heuristic & BB==FALSE) cfd=ssc$bound-1  
-         } else{ cfd<-NA }
+              } else{ cfd=NA
+                      if(BB==TRUE) bcfd=NA}
   
-  #arrange items to return
+    #arrange items to return
+    if(BB==TRUE) {
+      out<-list("SingleStep"=c("pairfd"=pfd/m,
+                                          "SSr"=rfd/length(p1),
+                                          "SSc"=cfd/length(p2) ) ,
+                           
+                           "BandB"=c("b.fdr"=brfd/length(p1),
+                                   "b.fdc"=bcfd/length(p2) ) ) }
+      
+    if(BB==FALSE) {
+
+        out<-c("SingleStep"=c("pairfd"=pfd/m,
+                                 "SSr"=rfd/length(p1),
+                                 "SSc"=cfd/length(p2) )  ) }
+        
+    ###remove NAs from item to return
+    out<-lapply(out, function(x) x[!is.na(x)])
+    out<-out[lapply(out,length)>0]
     
-    ###items to return
-    return(c("pairfd"=pfd/m,
-                "SSr"=rfd/length(p1),
-                "SSc"=cfd/length(p2)))
+    return(out)
   }

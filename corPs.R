@@ -32,7 +32,7 @@ corPs<-function(om1, om2, p1, p2,
                 type=c("Mat","Vec"), pthresh){
    
    
-  #pval from pearson cor
+    #pval from pearson cor
     cor2p<-function(r,n=ncol(om1)){
       t<-(r*sqrt(n-2))/sqrt(1-r^2)
       p<-2*(1 - pt(abs(t),(n-2)))
@@ -46,29 +46,27 @@ corPs<-function(om1, om2, p1, p2,
       max(fact[fact<30])
     }
     
-    if(type=="Vec"){
-    
-    #remove all zero rows
-    keep1<-which(rowSums(om2)!=0)
-    om1<-om1[keep1,]
-   
-    keep2<-which(rowSums(om2)!=0)
-    om2<-om2[keep2,]
+    #make selection
+    om1<-om1[p1,]
+    om2<-om2[p2,]
     
     #choose number of splits
     s1<-mfact(nrow(om1))
     s2<-mfact(nrow(om2))
     
-    #make an empty vector
-    corOUT<-ff::ff(vmode = "single", length=0)
-    
-    #split row numbers into several block
+    #split column numbers into several block
     SPLIT1<-split(1:nrow(om1), rep(1:s1, each = nrow(om1)/s1))
     SPLIT2<-split(1:nrow(om2), rep(1:s2, each = nrow(om2)/s2)) 
     
     ## create all unique combinations of block
     COMBS<-expand.grid(1:length(SPLIT1), 1:length(SPLIT2))
     COMBS<-unique(COMBS)
+    
+    
+    if(type=="Vec"){
+  
+    #make an empty vector
+    corOUT<-ff::ff(vmode = "single", length=0)
     
     ## iterate through each combination
     ## calculate correlation 
@@ -90,29 +88,13 @@ corPs<-function(om1, om2, p1, p2,
     
     if(type=="Mat"){
       
-      #make selection
-      sm1<-om1[p1,]
-      sm2<-om2[p2,]
-
-      #choose number of splits
-      s1<-mfact(nrow(sm1))
-      s2<-mfact(nrow(sm2))
-      
-      #split column numbers into several block
-      SPLIT1<-split(1:nrow(sm1), rep(1:s1, each = nrow(sm1)/s1))
-      SPLIT2<-split(1:nrow(sm2), rep(1:s2, each = nrow(sm2)/s2)) 
-      
-      ## create all unique combinations of block
-      COMBS<-expand.grid(1:length(SPLIT1), 1:length(SPLIT2))
-      COMBS<-unique(COMBS)
-      
-      ## iterate through each combination
-      ## calculate correlation matrix
-      ## convert correlation to p-value
-      ## store them in the matrix 
-      
       ##make an empty matrix 
-      corOUT<-ff::ff(vmode = "single", dim = c(nrow(sm1), nrow(sm2)))
+      corOUT<-ff::ff(vmode = "single", dim = c(nrow(om1), nrow(om2)))
+
+      ## iterate through each combination
+      ## calculate correlation 
+      ## convert correlation to p-value
+      ## store them in the vector      
       cat("Generating correlation matrix. \n")
       for (i in 1:nrow(COMBS)) {
         G1<-SPLIT1[[COMBS[i,1]]]
