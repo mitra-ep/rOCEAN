@@ -47,10 +47,10 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
     #calculate vector of p values
     cat("Calculating P vector. \n")
     pps<-corPs(om1, om2, p1, p2, type="Vec",pthresh =concp )
-    if(length(pv)==0) pfd=m
+    if(length(pps)==0) pfd=m
 
     #run pairwise algorithm
-    if(length(pv)>0){
+    if(length(pps)>0){
     cat("Calculating FD for pairs. \n")
     pfd<-pairFD(pps, gCT)}
     

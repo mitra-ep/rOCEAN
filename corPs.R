@@ -100,7 +100,7 @@ corPs<-function(om1, om2, p1, p2,
         G1<-SPLIT1[[COMBS[i,1]]]
         G2<-SPLIT2[[COMBS[i,2]]]
         flush.console()
-        COR<-cor(t(sm1[G1,]), t(sm2[G2,]) )
+        COR<-cor(t(om1[G1,]), t(om2[G2,]) )
         CORP<-cor2p(COR)
         corOUT[G1, G2]<-CORP
         COR<-NULL
