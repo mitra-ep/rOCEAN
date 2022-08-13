@@ -33,8 +33,8 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
   
   #parameters
   grandH=gCT[1]
+  concp=gCT[2]
   z=gCT[3]
-  concp=gCT[3]
   alpha=gCT[4]
   m=as.numeric(nrow(om1))*as.numeric(nrow(om2))
   
