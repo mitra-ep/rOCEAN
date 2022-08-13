@@ -29,7 +29,7 @@
 #' 
 
 corPs<-function(om1, om2, p1, p2,
-                type=c("Mat","Vec"), pthresh=0.05){
+                type=c("Mat","Vec"), pthresh){
    
    
   #pval from pearson cor

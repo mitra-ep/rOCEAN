@@ -42,8 +42,8 @@ simesCT<-function(om1, om2, alpha=0.05){
 
   #get size of concentration set
   z<-ifelse(grandH==m, 0, min(which(sp*grandH <= (1:k - m + grandH + 1) * alpha)))
-    
+  concP=sp[z]  
   #remove large objects
   gc()
   
-  return(c(grandH,z,alpha) )}
+  return(c(grandH,concP,z,alpha) )}

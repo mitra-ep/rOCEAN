@@ -35,8 +35,8 @@ getCat<-function(ps, gCT, m, scale=c("col","row")){
   
   #parameters
   grandH=gCT[1]
-  z=gCT[2]
-  alpha=gCT[3]
+  z=gCT[3]
+  alpha=gCT[4]
   
   ##apply inversion if required
   if(scale=="row") sq.cat<-ceiling(ps[]*grandH/alpha)

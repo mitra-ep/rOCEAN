@@ -33,8 +33,9 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
   
   #parameters
   grandH=gCT[1]
-  z=gCT[2]
-  alpha=gCT[3]
+  z=gCT[3]
+  concp=gCT[3]
+  alpha=gCT[4]
   m=as.numeric(nrow(om1))*as.numeric(nrow(om2))
   
   if(missing(scale)){
@@ -57,7 +58,7 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
   
   if(sum(c("row","col") %in% scale)>=1){
     #calculate matrix of p values
-    ps<-corPs(om1, om2, p1, p2, type="Mat")}
+    ps<-corPs(om1, om2, p1, p2, type="Mat", pthresh=concp)}
     
   if("row" %in% scale){
       sCatr<-getCat(ps, gCT, m, scale="row")

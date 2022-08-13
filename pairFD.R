@@ -26,7 +26,7 @@ pairFD<-function(p, gCT){
   
   #parameters
   grandH=gCT[1]
-  alpha=gCT[3]
+  alpha=gCT[4]
 
   #sort pvals
   sp<-sort(p)
