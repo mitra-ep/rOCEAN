@@ -4,6 +4,8 @@
 #'
 #' @param p  vector of p-values in the region of interest
 #' 
+#' @param n  number of pairs
+#' 
 #' @param gCT Parameters of the global closed testing provided as the output of simesCT function 
 #'  
 #' @return Number of false discoveries among pairs
@@ -22,7 +24,7 @@
 #' 
 #' 
 
-pairFD<-function(p, gCT){
+pairFD<-function(p, n, gCT){
   
   #parameters
   grandH=gCT[1]
@@ -38,7 +40,7 @@ pairFD<-function(p, gCT){
   d<-max(uval)
   
   #fdp
-  fd<-length(p)-d
+  fd<-n-d
 
   ###return
   return(fd)

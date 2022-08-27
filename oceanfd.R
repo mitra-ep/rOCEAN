@@ -52,7 +52,7 @@ oceanfd<-function(om1, om2, p1, p2, gCT, scale=c("pair","row","col"), BB=TRUE){
     #run pairwise algorithm
     if(length(pps)>0){
     cat("Calculating FD for pairs. \n")
-    pfd<-pairFD(pps, gCT)}
+    pfd<-pairFD(pps, m, gCT)}
     
   }else{ pfd<-NA }
   
