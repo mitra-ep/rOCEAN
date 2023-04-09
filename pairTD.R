@@ -1,6 +1,6 @@
-#' @title pairFD
+#' @title pairTD
 #'
-#' @description Calculate number of false discoveries over pairs
+#' @description Calculate PTD over pairs
 #'
 #' @param p  vector of p-values in the region of interest
 #' 
@@ -8,7 +8,7 @@
 #' 
 #' @param gCT Parameters of the global closed testing provided as the output of simesCT function 
 #'  
-#' @return Number of false discoveries among pairs
+#' @return Proportion of true discoveries among pairs
 #'
 #' @author Mitra Ebrahimpoor
 #'
@@ -24,7 +24,7 @@
 #' 
 #' 
 
-pairFD<-function(p, n, gCT){
+pairTD<-function(p, n, gCT){
   
   #parameters
   grandH=gCT[1]
@@ -39,9 +39,9 @@ pairFD<-function(p, n, gCT){
   uval<-1-u+sum(tp<u)
   d<-max(uval)
   
-  #fdp
-  fd<-n-d
+  #tdp
+  tdp<-d/n
 
   ###return
-  return(fd)
+  return(tdp)
 }

@@ -4,7 +4,8 @@
 #'
 #' @param sCat  Category matrix, output of getCat function
 #'  
-#' @return A list of two objects, the heuristic and the bound
+#' @return A list of two objects, the heuristic, the bound, number of steps
+#' taken and convergence status
 #'
 #' @author Mitra Ebrahimpoor
 #'
@@ -20,57 +21,56 @@
 #' 
 #' 
 
-runbab<-function(sCat, ssh, ssb, nMax=100){
-
+  runbab<-function(sCat, ssh, ssb, nMax=100){
+    
     
     #initial arguments
     ##step count
-    step=1 
+    step=0 
     
     ##current solution
-    cFD<-ssh
+    sL<-ssh
     
     ##tracking parent bound
     PBlist<-c(ssb,ssb)
     
     ##initial branched
     branches<-list(1,0)
-    
-    outlist<-list()
+  
     #search with B&B  until maximum step 
-    while(step<=nMax & length(branches)>0){
+    while(step<nMax & length(branches)>0){
       
-      B<-branches[[1]]
+      B<-branches[[length(branches)]]
       
       #run single step on the branch
       SSloc<-singleStep(sCat,B)
-      outlist[[step]]<-c(SSloc$heuristic, SSloc$bound, B)
-      
+    
       #get the bound for branch
-      Cbound<-min(PBlist[1], SSloc$bound)
+      Cbound<-min(SSloc$bound,PBlist[length(branches)])
       
       #remove the checked branch
-      branches[[1]]<-NULL
+      branches[[length(branches)]]<-NULL
+      
       #remove the corresponding parent bound for checked branch
-      PBlist<-PBlist[-1]
+      PBlist<-PBlist[-length(branches)]
       
       #branching should continue 
-      if( Cbound > cFD ){
+      if( Cbound > sL ){
         ##update the heuristic if a better one is found
-        cFD<-max(cFD,SSloc$heuristic)
+        sL<-max(sL,SSloc$heuristic)
         
         #cont. branching if possible, add new branched to list
         if(length(B)<nrow(sCat) ){
           #avoid repeating main branch
           if( !(sum(B)==nrow(sCat)-1) ){
             branches[[length(branches)+1]]<-c(B,1)
-            PBlist[length(PBlist)+1]<-Cbound
+            PBlist[length(PBlist)+1]<-SSloc$bound
           }
           
           #avoid branch with all zero
           if( !(sum(B)==0 & length(B)==(nrow(sCat)-1)) ){
             branches[[length(branches)+1]]<-c(B,0) 
-            PBlist[length(PBlist)+1]<-Cbound
+            PBlist[length(PBlist)+1]<-SSloc$bound
           }
         }
         
@@ -85,11 +85,13 @@ runbab<-function(sCat, ssh, ssb, nMax=100){
       BdinQ<-unlist(lapply(branches, function(b) singleStep(sCat,b)$bound))
       #compare to parent bound
       BdinQ<-pmin(BdinQ,PBlist)
+      
     }else BdinQ<-0
     
-    mBd<-max(cFD, max(BdinQ))
+    sU<-max(sL, max(BdinQ))
+    
     
     #return solution
-    return(list("FD"=cFD,"Bd"=mBd, "Step"=step, "nQ"=length(branches), "allout"=outlist)) 
-}
-
+    return(list("sl"=sL,"sU"=sU, "Step"=step, "Conv"=length(branches)==0) ) 
+  }
+  

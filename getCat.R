@@ -46,8 +46,7 @@ getCat<-function(ps, gCT, m, scale=c("col","row")){
   
   #get the size of categories from concentrations
   catSize<-min(as.numeric(nrow(sq.cat))*as.numeric(nrow(sq.cat)),
-               max(unlist(sq.cat), na.rm=T), z-m+grandH+1)
-  
+               max(unlist(sq.cat), na.rm=T), z-m+grandH+1, z)
   
   #calculate cumulative num in categories
   if(catSize>=2){
@@ -63,6 +62,7 @@ getCat<-function(ps, gCT, m, scale=c("col","row")){
   sCat<-sCat[ordcat,]
     }
   
+  #all zero category mat for cases where no signal is detected
   if(catSize<2) sCat<-matrix(data=0,nrow=as.numeric(nrow(ps)), ncol=catSize+1)
   
   #message when done

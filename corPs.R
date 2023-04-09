@@ -31,8 +31,15 @@
 corPs<-function(om1, om2, p1, p2,
                 type=c("Mat","Vec"), pthresh){
    
-   
-    #pval from pearson cor
+    
+    #check pathways
+    if(!is.numeric(p1) & sum(p1 %in% rownames(om1))==0) stop("Cannot select from om1 with p1.")
+    if(!is.numeric(p2) & sum(p2 %in% rownames(om2))==0) stop("Cannot select from om2 with p2.")
+    
+    if(is.numeric(p1) & any(p1>nrow(mo1)) ) stop("Cannot select from om1 with p1.")
+    if(is.numeric(p2) & any(p2>nrow(mo2)) ) stop("Cannot select from om2 with p2.")
+  
+  #pval from pearson cor
     cor2p<-function(r,n=ncol(om1)){
       t<-(r*sqrt(n-2))/sqrt(1-r^2)
       p<-2*(1 - pt(abs(t),(n-2)))
