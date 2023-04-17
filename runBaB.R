@@ -21,7 +21,7 @@
 #' 
 #' 
 
-  runbab<-function(sCat, ssh, ssb, nMax=100){
+runbab<-function(sCat, ssh, ssb, nMax=100){
     
     
     #initial arguments
@@ -92,6 +92,6 @@
     
     
     #return solution
-    return(list("sl"=sL,"sU"=sU, "Step"=step, "Conv"=length(branches)==0) ) 
+    return(list("sL"=sL,"sU"=sU, "Step"=step, "Conv"=length(branches)==0) ) 
   }
   

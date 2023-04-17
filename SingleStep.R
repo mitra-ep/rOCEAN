@@ -118,5 +118,5 @@ singleStep<-function(sCat, B){
   }else Bo<-min(which(getRs)) 
   
   ###items to return
-  return(list("heuristic"=Hu, "bound"=Bo))
+  return(list("heuristic"=Hu, "bound"=Bo-1))
 }

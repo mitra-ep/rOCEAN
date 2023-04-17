@@ -45,6 +45,5 @@ simesCT<-function(om1, om2, alpha=0.05){
   concP=sp[z]  
   #remove large objects
   gc()
-  m=as.numeric(nrow(om1))*as.numeric(nrow(om2))
-  
+
   return(c("grandH"=grandH,"concP"=concP,"z"=z,"alpha"=alpha, "m"=m) )}

@@ -31,12 +31,13 @@
 #' 
 #' 
 
-getCat<-function(ps, gCT, m, scale=c("col","row")){
+getCat<-function(ps, gCT, scale=c("col","row")){
   
   #parameters
   grandH=gCT[1]
   z=gCT[3]
   alpha=gCT[4]
+  m=gCT[5]
   
   ##apply inversion if required
   if(scale=="row") sq.cat<-ceiling(ps[]*grandH/alpha)

@@ -24,20 +24,23 @@
 #' 
 #' 
 
-pairTD<-function(p, n, gCT){
+pairTD<-function(p,
+                 n,
+                 gCT){
   
   #parameters
   grandH=gCT[1]
   alpha=gCT[4]
 
+  #checl p
+  if(length(p)==0){ d=0
+  }else{
   #sort pvals
   sp<-sort(p)
   
-  #create vector of hp/alpha
-  tp<-(grandH*sp)/alpha
-  u<-1:length(tp)
-  uval<-1-u+sum(tp<u)
-  d<-max(uval)
+  #create vector of U values
+  uval<-sapply(1:length(sp), function(u) 1-u+sum( (sp*grandH)<=(u*alpha) ))
+  d<-max(uval)}
   
   #tdp
   tdp<-d/n

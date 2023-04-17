@@ -28,17 +28,10 @@
 #' 
 #' 
 
-corPs<-function(om1, om2, p1, p2,
+corPs<-function(om1, om2, 
                 type=c("Mat","Vec"), pthresh){
    
-    
-    #check pathways
-    if(!is.numeric(p1) & sum(p1 %in% rownames(om1))==0) stop("Cannot select from om1 with p1.")
-    if(!is.numeric(p2) & sum(p2 %in% rownames(om2))==0) stop("Cannot select from om2 with p2.")
-    
-    if(is.numeric(p1) & any(p1>nrow(mo1)) ) stop("Cannot select from om1 with p1.")
-    if(is.numeric(p2) & any(p2>nrow(mo2)) ) stop("Cannot select from om2 with p2.")
-  
+
   #pval from pearson cor
     cor2p<-function(r,n=ncol(om1)){
       t<-(r*sqrt(n-2))/sqrt(1-r^2)
@@ -53,10 +46,7 @@ corPs<-function(om1, om2, p1, p2,
       max(fact[fact<30])
     }
     
-    #make selection
-    om1<-om1[p1,]
-    om2<-om2[p2,]
-    
+
     #choose number of splits
     s1<-mfact(nrow(om1))
     s2<-mfact(nrow(om2))
@@ -90,7 +80,7 @@ corPs<-function(om1, om2, p1, p2,
       COR<-NULL
       gc()
     } 
-    
+
     }
     
     if(type=="Mat"){
