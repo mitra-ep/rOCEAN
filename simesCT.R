@@ -29,7 +29,7 @@
 simesCT<-function(om1, om2, alpha=0.05){
   
   ##checks
-  if(ncol(om1)!=ncol(om2)) stop("ncol of the matrices should math!")
+  if(ncol(om1)!=ncol(om2)) stop("ncol of the matrices should match!")
 
   ##calculation of grandH
   
