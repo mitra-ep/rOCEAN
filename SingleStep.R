@@ -48,13 +48,10 @@ singleStep<-function(sCat, B){
   if(type=="single"){
     
     submat<-sCat[which(B==1),]
-    #get R for heuristic
-    getRp<-any(submat>=1:ncol(sCat))
-    Hu<-ifelse(getRp,1,0)  
-    
-    #get R for bound
-    getRs<-any(submat>=1:ncol(sCat))
-    Bo<-ifelse(getRs,1,0)     }  
+    #get j for heuristic and bound
+    getR<-any(submat>=1:ncol(sCat))
+    Hj<-ifelse(getR,1,0)  
+    Bj<-Hj    }  
   
   #a subset of rows selected and some not changed
   if(type=="partial"){
@@ -69,13 +66,14 @@ singleStep<-function(sCat, B){
     
     #calculate cumsum over columns for customized mat
     cumcat.p<-apply(submat, 2, cumsum)
-    #get R for heuristic
-    getRp<-apply(cumcat.p, 1, function(b) any(b>=1:ncol(sCat)))
+    
+    #get j for heuristic
+    Hj<-findj(cumcat.p)
     
     #calculate cumsum over columns for customized mat
     cumcat.s<-apply(apply(submat, 2, sort), 2, cumsum) 
-    #get R for bound
-    getRs<-apply(cumcat.s, 1, function(b) any(b>=1:ncol(sCat)))
+    #get j for bound
+    Bj<-findj(cumcat.s)
     
   }
   
@@ -87,36 +85,21 @@ singleStep<-function(sCat, B){
 
     #calculate cumsum over columns for customized mat
     cumcat.p<-apply(submat, 2, cumsum)
-    #get R for heuristic
-    getRp<-apply(cumcat.p, 1, function(b) any(b>=1:ncol(sCat)))
+    #get j for heuristic
+    Hj<-findj(cumcat.p)
     
     #calculate cumsum over columns for customized mat
     cumcat.s<-apply(apply(submat, 2, sort), 2, cumsum) 
-    #get R for bound
-    getRs<-apply(cumcat.s, 1, function(b) any(b>=1:ncol(sCat)))  
+    #get j for bound
+    Bj<-findj(cumcat.s)  
   }
   
   ##calculate the heuristic for all cases
-  #extreme cases
-  if(all(getRp) | all(!getRp) ) {
-    #All rows rejected
-    if(all(getRp)) Hu<-0
-    #no rows rejected
-    if(all(!getRp)) Hu<-length(getRp)
-    
-    #other cases 
-  }else Hu<-max(which(!getRp)) 
+  Hu=nrow(sCat)-(1-Hj)
   
-  
-  ##calculate the upper-bound for all cases
-  #extreme cases
-  if(all(getRs) | all(!getRs) ) {
-    if(all(getRs)) Bo<-1
-    if(all(!getRs)) Bo<-length(getRp)+1
-    
-    #other cases 
-  }else Bo<-min(which(getRs)) 
+  ##calculate the bound for all cases
+  Bo=nrow(sCat)-(1-Bj)
   
   ###items to return
-  return(list("heuristic"=Hu, "bound"=Bo-1))
+  return(list("heuristic"=Hu, "bound"=Bo))
 }

@@ -91,7 +91,7 @@ ocean<-function(om1, om2, gCT, scale=c("pair","row","col"),
   
   
     if("col" %in% scale){
-        sCatc<-getCat(mps, gCT,scale="col")
+        sCatc<-getCat(mps, gCT, scale="col")
         gc()
         #run single step algorithm
         ssc<-singleStep(sCatc)
