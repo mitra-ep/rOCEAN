@@ -28,17 +28,50 @@
 #' 
 #' 
 
-corPs<-function(om1, om2, 
-                type=c("Mat","Vec"), pthresh){
+corPs<-function(om1, om2,type=c("Mat","Vec"), pthresh){
    
-
-  #pval from pearson cor
-    cor2p<-function(r,n=ncol(om1)){
-      t<-(r*sqrt(n-2))/sqrt(1-r^2)
-      p<-2*(1 - pt(abs(t),(n-2)))
-      return(p)
-    }
+  #check
+  if(ncol(om1)!=ncol(om2))
+    stop("The two matrices must have the same number of columns (i.e. same number of subjects).")
+ 
+  #pval from pearson corr
+  cor2p<-function(r,n=ncol(om1)){
+    t<-(r*sqrt(n-2))/sqrt(1-r^2)
+    p<-2*(1 - pt(abs(t),(n-2)))
+    return(p)
+  }
+  
+  #pearson corr while avoiding zero-var
+  custom_cor_mat<-function(mat1, mat2) {
+    #columns with zero-var
+    var1<-apply(mat1, 2, var)
+    var2<-apply(mat2, 2, var)
     
+    non_zero_var1<-which(var1 != 0)
+    non_zero_var2<-which(var2 != 0)
+    
+    mat1_filtered<-mat1[, non_zero_var1, drop = FALSE]
+    mat2_filtered<-mat2[, non_zero_var2, drop = FALSE]
+    
+    #scale matrices
+    mat1_scaled<-scale(mat1_filtered)
+    mat2_scaled<-scale(mat2_filtered)
+    
+    #get pearson corr
+    cor_matrix<-cor(mat1_scaled, mat2_scaled)
+    
+    #full result matrix with 0
+    result<-matrix(0, ncol(mat1), ncol(mat2))
+    
+    # fill in the final mat
+    result[non_zero_var1, non_zero_var2]<-cor_matrix
+    
+    #allocate names
+    rownames(result)<-colnames(mat1)
+    colnames(result)<-colnames(mat2)
+    return(result)
+  }
+
     #find factors function
     mfact <- function(n){
       one.to.n <- seq_len(n)
@@ -73,8 +106,9 @@ corPs<-function(om1, om2,
       G1<-SPLIT1[[COMBS[i,1]]]
       G2<-SPLIT2[[COMBS[i,2]]]
       flush.console()
-      COR<-cor(t(om1[G1,]), t(om2[G2,]) )
+      COR<-custom_cor_mat(t(om1[G1,]), t(om2[G2,]) )
       CORP<-cor2p(COR)
+
       CORP<-CORP[CORP<pthresh]
       corOUT<-c(corOUT[],CORP)
       COR<-NULL
@@ -97,7 +131,7 @@ corPs<-function(om1, om2,
         G1<-SPLIT1[[COMBS[i,1]]]
         G2<-SPLIT2[[COMBS[i,2]]]
         flush.console()
-        COR<-cor(t(om1[G1,]), t(om2[G2,]) )
+        COR<-custom_cor_mat(t(om1[G1,]), t(om2[G2,]) )
         CORP<-cor2p(COR)
         corOUT[G1, G2]<-CORP
         COR<-NULL

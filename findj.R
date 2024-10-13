@@ -13,12 +13,13 @@
 #'
 #' 
 
-findj <- function(mat){
+findj<-function(mat){
+  
   r<- nrow(mat)
   l<- ncol(mat)
   
   #if no mat_ij>=k
-  res=r
+  res=r+1
   
   #initiate while loop
   j<-r
@@ -32,4 +33,4 @@ findj <- function(mat){
     }
   }
   return(res)
-  }
+}

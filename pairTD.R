@@ -33,7 +33,8 @@ pairTD<-function(p,
   alpha=gCT[4]
 
   #checl p
-  if(length(p)==0){ d=0
+  if(length(p)==0){
+    d=0
   }else{
   #sort pvals
   sp<-sort(p)

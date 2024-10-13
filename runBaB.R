@@ -22,8 +22,7 @@
 #' 
 
 runbab<-function(sCat, ssh, ssb, nMax=100){
-    
-    
+
     #initial arguments
     ##step count
     step=0 
@@ -46,7 +45,7 @@ runbab<-function(sCat, ssh, ssb, nMax=100){
       SSloc<-singleStep(sCat,B)
     
       #get the bound for branch
-      Cbound<-min(SSloc$bound,PBlist[length(branches)])
+      Cbound<-max(SSloc$bound,PBlist[length(branches)])
       
       #remove the checked branch
       branches[[length(branches)]]<-NULL
@@ -55,9 +54,9 @@ runbab<-function(sCat, ssh, ssb, nMax=100){
       PBlist<-PBlist[-length(branches)]
       
       #branching should continue 
-      if( Cbound > sL ){
+      if( Cbound < sL ){
         ##update the heuristic if a better one is found
-        sL<-max(sL,SSloc$heuristic)
+        sL<-min(sL,SSloc$heuristic)
         
         #cont. branching if possible, add new branched to list
         if(length(B)<nrow(sCat) ){
@@ -86,12 +85,12 @@ runbab<-function(sCat, ssh, ssb, nMax=100){
       #compare to parent bound
       BdinQ<-pmin(BdinQ,PBlist)
       
-    }else BdinQ<-0
+    }else BdinQ<-nrow(sCat)
     
-    sU<-max(sL, max(BdinQ))
+    sU<-min(sL, min(BdinQ))
     
     
     #return solution
-    return(list("sL"=sL,"sU"=sU, "Step"=step, "Conv"=length(branches)==0) ) 
+    return(list("B"=sU, "H"=sL, "Step"=step, "Conv"=length(branches)==0) ) 
   }
   

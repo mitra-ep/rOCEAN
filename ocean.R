@@ -71,7 +71,7 @@ ocean<-function(om1, om2, gCT, scale=c("pair","row","col"),
       ssr<-singleStep(sCatr)
       cat("Row done \n")
       #td if conclusive result                    
-      rtdp=1-(ssr$bound/nrow(sCatr) )
+      rtdp=ssr$bound/nrow(sCatr)
       stepr=1
 
       #td if inconclusive and run BaB   
@@ -79,8 +79,8 @@ ocean<-function(om1, om2, gCT, scale=c("pair","row","col"),
       if(ssr$bound!=ssr$heuristic & nMax>1){ 
           bboutr<-runbab(sCatr,ssr$heuristic,ssr$bound,nMax=nMax)
           stepr=bboutr$Step
-          bboutr$sL<-1-(bboutr$sL/nrow(sCatr) )
-          bboutr$sU<-1-(bboutr$sU/nrow(sCatr) ) 
+          bboutr$sL<-bboutr$sL/nrow(sCatr)
+          bboutr$sU<-bboutr$sU/nrow(sCatr) 
           cat("Row BB done \n")}
      
       
@@ -97,7 +97,7 @@ ocean<-function(om1, om2, gCT, scale=c("pair","row","col"),
         ssc<-singleStep(sCatc)
         
         #td if conclusive result                    
-        ctdp=1-(ssc$bound/nrow(sCatc) )  
+        ctdp=ssc$bound/nrow(sCatc) 
         stepc=1
         cat("Col done \n")
         #td if inconclusive and run BaB  
@@ -105,8 +105,8 @@ ocean<-function(om1, om2, gCT, scale=c("pair","row","col"),
         if(ssc$bound!=ssc$heuristic & nMax>1){ 
             bboutc<-runbab(sCatc,ssc$heuristic,ssc$bound,nMax=nMax)
             stepc=bboutc$Step 
-            bboutc$sL<-1-(bboutc$sL/nrow(sCatc) )
-            bboutc$sU<-1-(bboutc$sU/nrow(sCatc) )
+            bboutc$sL<-bboutc$sL/nrow(sCatc)
+            bboutc$sU<-bboutc$sU/nrow(sCatc)
             cat("Col BB done \n")}
         
           }  else{ ctdp=NA

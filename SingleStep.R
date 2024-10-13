@@ -3,7 +3,9 @@
 #' @description Calculates a heuristic and an upper-bound for the number of FD based on the algorithm
 #' introduced in paper
 #'
-#' @param sCat  Category matrix, output of getCat function
+#' @param sCat Category matrix, output of getCat function
+#' 
+#' @param B Optional, to identify rows to be fixed (1) or removed (0) while splitting the search space.
 #'  
 #' @return A list of two objects, the heuristic and the bound
 #'
@@ -11,11 +13,7 @@
 #'
 #' \email{m.ebrahimpoor@@lumc.nl}
 #'
-#' @seealso
-#'
-#' @references
-#'
-#' @examples
+#' @seealso findj
 #'
 #' @export
 #' 
@@ -23,9 +21,8 @@
 
 singleStep<-function(sCat, B){
   
-  ##set B if missing
+  ##set B to all if missing
   if(missing(B)) B=rep(1,nrow(sCat))
-  
   
   #B is full-size
   if(length(B)==nrow(sCat)) {
@@ -58,7 +55,7 @@ singleStep<-function(sCat, B){
     #subscripts where no action required
     Bfix<-c(B, rep(2,nrow(sCat)-length(B) ) )
     
-    #create a new matrix by removing rows based on B
+    #create a new matrix by fixing/removing rows based on B
     submat<-rbind(sCat[which(B==1),], sCat[which(Bfix==2),])
     
     if(sum(Bfix==2)>1) submats<-rbind(sCat[which(B==1),], apply(sCat[which(Bfix==2),], 2, sort))
@@ -95,11 +92,11 @@ singleStep<-function(sCat, B){
   }
   
   ##calculate the heuristic for all cases
-  Hu=nrow(sCat)-(1-Hj)
+  Hu=nrow(sCat)-(Hj-1)
   
   ##calculate the bound for all cases
-  Bo=nrow(sCat)-(1-Bj)
+  Bo=nrow(sCat)-(Bj-1)
   
-  ###items to return
+  ###return the bound for true discoveries
   return(list("heuristic"=Hu, "bound"=Bo))
 }
