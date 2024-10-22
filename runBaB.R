@@ -37,8 +37,11 @@ runbab<-function(sCat, ssh, ssb, nMax=100){
     branches<-list(1,0)
   
     #search with B&B  until maximum step 
-    while(step<nMax & length(branches)>0){
-      
+    while(step<nMax){
+     #stop the loop when converged
+       if(length(branches) == 0) {
+        break
+      }
       B<-branches[[length(branches)]]
       
       #run single step on the branch
@@ -51,7 +54,7 @@ runbab<-function(sCat, ssh, ssb, nMax=100){
       branches[[length(branches)]]<-NULL
       
       #remove the corresponding parent bound for checked branch
-      PBlist<-PBlist[-length(branches)]
+      PBlist<-PBlist[-length(PBlist)]
       
       #branching should continue 
       if( Cbound < sL ){

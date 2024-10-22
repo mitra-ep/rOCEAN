@@ -29,113 +29,116 @@
 #' 
 #' 
 
-ocean<-function(om1, om2, gCT, scale=c("pair","row","col"),
-                mps, cor=FALSE, nMax=100){
+ocean <- function(om1, om2, gCT, scale = c("pair", "row", "col"),
+                  mps, cor = FALSE, nMax = 100) {
   
-  #check the pvalue matrix
-  if(cor==TRUE & missing(mps)) stop("Matrix of p-values not provided.")
-
-  #parameters
-  concp=gCT[2]
-
-  if(missing(scale)){
-    scale=c("pair","row","col") }
+  # check the pvalue matrix
+  if (cor == TRUE & missing(mps)) stop("Matrix of p-values not provided.")
   
-  ptdp<-NA
-  #TD over pairs
-  if("pair" %in% scale & missing(mps)){
-    #calculate vector of p values
-    pps<-corPs(om1, om2, type="Vec", pthresh=concp )
-    ptdp<-pairTD(pps, nrow(om1)*nrow(om2), gCT)
-   }
-    cat("check 1")
-  #run pairwise algorithm
-  if("pair" %in% scale & !missing(mps)){
-    pps<-as.vector(mps[])
-    ptdp<-pairTD(pps, nrow(mps)*ncol(mps), gCT)
-    }
-
-
+  # parameters
+  concp = gCT[2]
   
-  if(sum(c("row","col") %in% scale)>=1 & missing(mps)){
-    #calculate matrix of p values
-    mps<-corPs(om1, om2, type="Mat")
+  if (missing(scale)) {
+    scale = c("pair", "row", "col")
   }
+  
+  ptdp <- NA
+  # TD over pairs
+  if (any("pair" %in% scale) & missing(mps)) {
+    # calculate vector of p values
+    pps <- corPs(om1, om2, type = "Vec", pthresh = concp)
+    ptdp <- pairTD(pps, nrow(om1) * nrow(om2), gCT)
+  }
+  
+  # run pairwise algorithm
+  if (any("pair" %in% scale) & !missing(mps)) {
+    pps <- as.vector(mps[])
+    ptdp <- pairTD(pps, nrow(mps) * ncol(mps), gCT)
+  }
+  
+  if (any(c("row", "col") %in% scale) & missing(mps)) {
+    # calculate matrix of p values
+    mps <- corPs(om1, om2, type = "Mat")
+  }
+  
   cat("corP done \n")
   
-  if("row" %in% scale){
-      sCatr<-getCat(mps, gCT, scale="row")
-      gc()
-      cat("scat ready \n")
-      #run single step algorithm
-      ssr<-singleStep(sCatr)
-      cat("Row done \n")
-      #td if conclusive result                    
-      rtdp=ssr$bound/nrow(sCatr)
-      stepr=1
-
-      #td if inconclusive and run BaB   
-      gc()
-      if(ssr$bound!=ssr$heuristic & nMax>1){ 
-          bboutr<-runbab(sCatr,ssr$heuristic,ssr$bound,nMax=nMax)
-          stepr=bboutr$Step
-          bboutr$sL<-bboutr$sL/nrow(sCatr)
-          bboutr$sU<-bboutr$sU/nrow(sCatr) 
-          cat("Row BB done \n")}
-     
-      
-        } else{ rtdp=NA
-                stepr=NA
-                
-         }
-  
-  
-    if("col" %in% scale){
-        sCatc<-getCat(mps, gCT, scale="col")
-        gc()
-        #run single step algorithm
-        ssc<-singleStep(sCatc)
-        
-        #td if conclusive result                    
-        ctdp=ssc$bound/nrow(sCatc) 
-        stepc=1
-        cat("Col done \n")
-        #td if inconclusive and run BaB  
-        gc()
-        if(ssc$bound!=ssc$heuristic & nMax>1){ 
-            bboutc<-runbab(sCatc,ssc$heuristic,ssc$bound,nMax=nMax)
-            stepc=bboutc$Step 
-            bboutc$sL<-bboutc$sL/nrow(sCatc)
-            bboutc$sU<-bboutc$sU/nrow(sCatc)
-            cat("Col BB done \n")}
-        
-          }  else{ ctdp=NA
-                   stepc=NA
-                   }
-
-    #arrange items to return
-    #result for row
-    if(!is.na(stepr) & stepr>1){
-      outr<-c("rHeuristic"=bboutr$sL,"rBound"=bboutr$sU, "nStep"=stepr)
+  if ("row" %in% scale) {
+    sCatr <- getCat(mps, gCT, scale = "row")
+    gc()
+    cat("scat ready \n")
+    # run single step algorithm
+    ssr <- singleStep(sCatr)
+    cat("Row done \n")
+    # td if conclusive result
+    rtdp <- ssr$bound / nrow(sCatr)
+    stepr <- 1
+    
+    # td if inconclusive and run BaB
+    gc()
+    if (ssr$bound != ssr$heuristic & nMax > 1) {
+      bboutr <- runbab(sCatr, ssr$heuristic, ssr$bound, nMax = nMax)
+      stepr <- bboutr$Step
+      bboutr$H <- bboutr$H / nrow(sCatr)
+      bboutr$B <- bboutr$B / nrow(sCatr)
+      cat("Row BB done \n")
     }
-    if(!is.na(stepr) & stepr==1){
-      outr<-c("rTDP"=rtdp, "nStep"=stepr)}
-    if(is.na(stepr)) outr<-NA
-  
-    #result for col
-    if(!is.na(stepc) & stepc>1){
-      outc<-c("cHeuristic"=bboutc$sL,"cBound"=bboutc$sU, "nStep"=stepc)
-    }
-    if(!is.na(stepc) & stepc==1){
-      outc<-c("cTDP"=ctdp, "nStep"=stepc)}
-    if(is.na(stepc)) outc<-NA
-  
-    out<-list("Pairs"=c("pTDP"=ptdp),
-              "Rows"=outr,
-              "Columns"=outc  )
-      
-    ###remove NAs from item to return
-    out<-out[!is.na(out)]
-
-    return(out)
+    
+  } else {
+    rtdp <- NA
+    stepr <- NA
   }
+  
+  if ("col" %in% scale) {
+    sCatc <- getCat(mps, gCT, scale = "col")
+    gc()
+    # run single step algorithm
+    ssc <- singleStep(sCatc)
+    
+    # td if conclusive result
+    ctdp <- ssc$bound / nrow(sCatc)
+    stepc <- 1
+    cat("Col done \n")
+    # td if inconclusive and run BaB
+    gc()
+    if (ssc$bound != ssc$heuristic & nMax > 1) {
+      bboutc <- runbab(sCatc, ssc$heuristic, ssc$bound, nMax = nMax)
+      stepc <- bboutc$Step
+      bboutc$H <- bboutc$H / nrow(sCatc)
+      bboutc$B <- bboutc$B / nrow(sCatc)
+      cat("Col BB done \n")
+    }
+    
+  } else {
+    ctdp <- NA
+    stepc <- NA
+  }
+  
+  # arrange items to return
+  # result for row
+  if (!is.na(stepr) & stepr > 1) {
+    outr <- c("rHeuristic" = bboutr$H, "rBound" = bboutr$B, "nStep" = stepr)
+  }
+  if (!is.na(stepr) & stepr == 1) {
+    outr <- c("rTDP" = rtdp, "nStep" = stepr)
+  }
+  if (is.na(stepr)) outr <- NA
+  
+  # result for col
+  if (!is.na(stepc) & stepc > 1) {
+    outc <- c("cHeuristic" = bboutc$H, "cBound" = bboutc$B, "nStep" = stepc)
+  }
+  if (!is.na(stepc) & stepc == 1) {
+    outc <- c("cTDP" = ctdp, "nStep" = stepc)
+  }
+  if (is.na(stepc)) outc <- NA
+  
+  out <- list("Pairs" = c("pTDP" = ptdp),
+              "Rows" = outr,
+              "Columns" = outc)
+  
+  # remove NAs from item to return
+  out <- out[!is.na(out)]
+  
+  return(out)
+}
