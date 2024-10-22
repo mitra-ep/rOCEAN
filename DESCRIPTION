@@ -1,0 +1,11 @@
+Package: OCEAN
+Type: Package
+Title: OCEAN: Two-way feature set testing for multi-omics
+Version: 1.0
+Author: Mitra Ebrahimpoor
+Maintainer: Mitra Ebrahimpoor <mitra.ebrahimpoor@gmail.com>
+Description: OCEAN is a flexible feature set testing method for analysis of multi-omics. For a pair of omics, either matrix of pairwise associations is derived from a pair of pre-processed omics data (using corPs, embedded in ocean) or the p-value matrix provided by the user is used. This matrix is the input for simesCT, which calculates the closed testing parameters based on Simes local tests for a given alpha. Then for any given two-way feature set, 3 error rates are calculates using ocean function. The 3 error rates are TDP: proportion of omics pairs that are truly associated; row-TDP: proportion of rows that are associated with at least one column; column-TPD: proportion of columns that are associated with at least one row. TDP is calculated as an extension of SEA algorithm (see SEA R-package). For row-TDP and column-TDP a lower-bound (B) and heuristic (H) is calculated. Optionally, if the results are not exact (B not equal to H), it is possible to run branch and bound algorithm (using runBaB, embedded in ocean) to get an exact result. There are no limits on the number of feature sets being tested and the family-wise error rate is always controlled at level aplpha as set in the first step.
+License: GPL (>= 2)
+Date: 2024-10-23
+Encoding: UTF-8
+RoxygenNote: 7.3.1

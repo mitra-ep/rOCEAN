@@ -1,22 +1,24 @@
 #' @title Branch and bound algorithm implementation 
 #'
-#' @description performs B&B
-#'
+#' @description Performs B&B when the bound are not exact
+#' 
 #' @param sCat  Category matrix, output of getCat function
 #'  
-#' @return A list of two objects, the heuristic, the bound, number of steps
+#' @param ssh current Heuristic as provided by SingleStep function
+#'
+#' @param ssb current Bound as provided by SingleStep function
+#' 
+#' @param nMax Maximum number of steps for the algorithm, the algorithm may stop sooner if it converges.
+#'  
+#' @return A list, including the heuristic, the bound, number of steps
 #' taken and convergence status
 #'
 #' @author Mitra Ebrahimpoor
 #'
 #' \email{m.ebrahimpoor@@lumc.nl}
 #'
-#' @seealso
-#'
-#' @references
-#'
-#' @examples
-#'
+#' @seealso [simesCT()], [getCat()]
+#' 
 #' @export
 #' 
 #' 

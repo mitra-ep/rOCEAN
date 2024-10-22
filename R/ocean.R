@@ -1,39 +1,40 @@
-#' @title ocean algorithm 
+#' @title OCEAN algorithm 
 #'
-#' @description Estimates TDP in 3 scales for a given region of interest
+#' @description Estimates TDP bounds in 3 scales for a given pathway.
+#' In case the results is not exact, the function adopts branch and bound if nMax allows.
 #'
-#' @param om1,om2  The omics datasets where rows are probes and columns are samples.
-#'
-#' @param p1,p2  Optional argument to select pathways based on indexes (or row-names) of the omics datasets
-#' which define the pathways of interest corresponding to each omic dataset
-#'
+#' @param om1,om2  Subsets of omics data where rows are the probes and columns are samples.
+#' The rows of the two matrices should define the two-way feature set of interest.
+#' 
 #' @param gCT Parameters of the global closed testing provided as the output of simesCT function 
 #' 
 #' @param scale Optional, will specify the scale of the quantification, a character string. Possible choices are "pair", "col" and "row".
 #' If not provided, all scales are returned.
 #' 
-#' @param saveP If true, saves the correlation matrix
-#' @return For pair, fd is returned. For row and col, FD is returned if single step is conclusive 
+#' @param mps Optional, a sub-matrix of the matrix of pairwise associations. If provided, om1 and om2 are not required.
+#' If not provided, matrix of pairwise associations will be derived from om1 and om2 based on Pearson's correlation.
+#' 
+#' @param nMax Maximum number of steps for branch and bound, if set to 1 branch and bound
+#' is skipped even if the result is not exact. 
+#' 
+#' @return TDP is returned for the scales defined by scale. 
 #'
 #' @author Mitra Ebrahimpoor
 #'
 #' \email{m.ebrahimpoor@@lumc.nl}
-#'
-#' @seealso
-#'
-#' @references
-#'
-#' @examples
 #'
 #' @export
 #' 
 #' 
 
 ocean <- function(om1, om2, gCT, scale = c("pair", "row", "col"),
-                  mps, cor = FALSE, nMax = 100) {
+                  mps, nMax = 100) {
   
   # check the pvalue matrix
-  if (cor == TRUE & missing(mps)) stop("Matrix of p-values not provided.")
+  if (missing(om1) & missing(om2)){
+    if (missing(mps)) stop("Matrix of p-values not provided.")
+     }
+    
   
   # parameters
   concp = gCT[2]

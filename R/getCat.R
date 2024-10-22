@@ -1,31 +1,20 @@
-#' @title Calculates categories for a selected ROI 
+#' @title Calculate p-categories
 #'
-#' @description Calculates p-value categories from row data
+#' @description Calculates cumulative p-categories for a matrix of p-values
 #'
-#' @param ps Matrix of p-values for the region of interest, representing association between 
-#' two omics pathways
+#' @param ps Matrix of p-values, representing association between two omics pathways
 #' 
 #' @param gCT Parameters of the global closed testing provided as the output of simesCT function
 #'
-#' @param m Size of the original p-value matrix (number of rows × number of columns) before 
-#' selection of the region based on pathways.
-#' 
 #' @param scale Scale of the quantification, a character string. Possible choices are "col" and "row".
 #' 
-#' @return A matrix of categories where rows corresponds to the size of intersection
+#' @return Matrix of p-categories
 #'
 #' @author Mitra Ebrahimpoor
 #'
 #' \email{m.ebrahimpoor@@lumc.nl}
 #'
-#' @seealso
-#'
-#' \code{\link{}}, \code{\link{}}, \code{\link{}}
-#'
-#' @references
-#'
-#' @examples
-#'
+#' @seealso [simesCT()]
 #'
 #' @export
 #' 

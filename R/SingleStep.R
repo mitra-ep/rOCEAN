@@ -13,7 +13,7 @@
 #'
 #' \email{m.ebrahimpoor@@lumc.nl}
 #'
-#' @seealso findj
+#' @seealso [simesCT()], [getCat()], [findj()]
 #'
 #' @export
 #' 

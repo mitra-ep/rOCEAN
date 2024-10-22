@@ -1,25 +1,22 @@
-#' @title pairTD
+#' @title pairwise true discoveries proportion
 #'
-#' @description Calculate PTD over pairs
+#' @description Calculates the PTD over pair; based on SEA algorithm
 #'
-#' @param p  vector of p-values in the region of interest
+#' @param p  Matrix of pairwise associations, can be passed as a vector
 #' 
-#' @param n  number of pairs
+#' @param n  Number of pairs; may not be the same as number of pairs in p if a
+#' threshold is used to remove large p-values
 #' 
 #' @param gCT Parameters of the global closed testing provided as the output of simesCT function 
 #'  
-#' @return Proportion of true discoveries among pairs
+#' @return Proportion of true discoveries out of n pairs
 #'
 #' @author Mitra Ebrahimpoor
 #'
 #' \email{m.ebrahimpoor@@lumc.nl}
 #'
-#' @seealso
-#'
-#' @references
-#'
-#' @examples
-#'
+#' @seealso [simesCT()]
+#' 
 #' @export
 #' 
 #' 
@@ -31,11 +28,13 @@ pairTD<-function(p,
   #parameters
   grandH=gCT[1]
   alpha=gCT[4]
-
+  
   #checl p
   if(length(p)==0){
     d=0
   }else{
+  #a vector
+  p<-as.vector(p)
   #sort pvals
   sp<-sort(p)
   

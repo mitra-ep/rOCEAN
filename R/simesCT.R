@@ -20,12 +20,9 @@
 #'
 #' \email{m.ebrahimpoor@@lumc.nl}
 #'
-#' @seealso 
-#'
 #' @references See more details in "Hommel's procedure in linear time" doi: 10.1002/bimj.201700316.
 #'
-#' @examples
-#'
+#' @export
 #' 
 
 simesCT<-function(om1, om2, mps, m, alpha=0.05){

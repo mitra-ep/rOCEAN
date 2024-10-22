@@ -1,13 +1,11 @@
-#' @title Calculates p-value by spiliting 
+#' @title Calculates p-value  
 #'
-#' @description Calculate p-value matrix of Pearson correlation test for two matrices by splitting 
-#' the rows to (25 or less) smaller blocks. If the size is larger than 1000X1000,
+#' @description Calculates pairwise matrix of p-values based on Pearson's correlation test for two matrices.
+#' To gain speed, the matrix is split into several smaller blocks.
 #' 
-#' @param om1,om2  Two omics datasets where rows are probs and columns are samples.
+#' @param om1,om2  Subsets of omics data where rows are the probes and columns are samples.
+#' The rows of the two matrices should define the two-way feature set of interest.
 #'
-#' @param p1,p2  Optional argument to select pathways based on indexes (or row-names) of the omics datasets
-#' which define the pathways of interest corresponding to each omic dataset
-#' 
 #' @param type  Two options are available. Mat: Calculate the correlation of subsets and return a
 #' matrix; Vec: calculate the full correlation matrix, subset by the given threshold and return a
 #' vector of p-values.
@@ -21,11 +19,9 @@
 #'
 #' \email{m.ebrahimpoor@@lumc.nl}
 #'
-#' @seealso
-#'
-#'
 #' @importFrom ff ff
 #' 
+#' @export
 #' 
 
 corPs<-function(om1, om2,type=c("Mat","Vec"), pthresh){

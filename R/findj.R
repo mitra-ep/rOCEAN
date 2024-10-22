@@ -1,11 +1,11 @@
 #' @title Find J 
 #'
 #' @description For a matrix with elements presented as v_jk,
-#' searches for the smallest j where v{jk>=k 
+#' searches for the smallest j where v_jk>=k 
 #'
-#' @param mat input matrix
+#' @param mat input matrix of counts for search
 #'  
-#' @return value of J
+#' @return number of the row j
 #'
 #' @author Mitra Ebrahimpoor
 #'
