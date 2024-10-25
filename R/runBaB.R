@@ -10,14 +10,15 @@
 #' 
 #' @param nMax Maximum number of steps for the algorithm, the algorithm may stop sooner if it converges.
 #'  
-#' @return A list, including the heuristic, the bound, number of steps
-#' taken and convergence status
+#' @return A list, including the heuristic and the bound for the number of true discoveries, along with number of steps
+#' taken and convergence status.
 #'
 #' @author Mitra Ebrahimpoor
 #'
 #' \email{m.ebrahimpoor@@lumc.nl}
 #'
-#' @seealso [simesCT()], [getCat()]
+#' @seealso \link{getCat}
+#'  \link{singleStep}
 #' 
 #' @export
 #' 

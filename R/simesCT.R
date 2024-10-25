@@ -1,17 +1,17 @@
-#' @title Calculates parameters of global closed testing based on Simes test 
+#' @title Closed testing with Simes
 #'
-#' @description Calculates five parameters from closed testing with Simes local tests based on row data.
-#'  Grand H: size of the largest set which is not rejected by closed testing and z: size of concentration set.
-#'  These values are unique per dataset/alpha-level combination and do not depend on pathways. Calculation may
-#'  be somewhat long depending on the size of datasets and PC configurations.
+#' @description Calculates five parameters from closed testing with Simes local tests based on raw data.
+#'  These parameter are unique per data/alpha-level combination and do not depend on feature sets. Calculation may
+#'  be somewhat long depending on the size of data sets and PC configurations.
 #'
-#' @param om1,om2 Two omics datasets where rows are probs and columns are samples.
+#' @param om1,om2 Two omics data sets where rows are features and columns are samples.
 #' 
 #' @param mps,m Optional, pre-calculated matrix/vector of pairwise associations and the size.
-#' To save time in calculation of parameters, one can apply a threshold such as the type I error to rewove larger p-values.
-#' If a threshold is used size of matrix and m will not match. m should always be the size of the original matrix of associations.
+#' To save time in calculation of parameters, a threshold such as the type I error may be applies to remove larger p-values.
+#' If a threshold is used, size of matrix and \code{m} will not match. \code{m} should always be the size of the matrix of associations
+#' (number of features in \code{om1}  X number of features in \code{om2}).
 #' 
-#' @param alpha type I error rate
+#' @param alpha type I error rate, default value is 0.05.
 #'
 #' @return Vector of integers: grand H value, concentration p-value, size of concentration set z,
 #' size of the original pair-wise associations matrix and the type I error level used in calculations.
@@ -47,7 +47,10 @@ simesCT<-function(om1, om2, mps, m, alpha=0.05){
 
   #get size of concentration set
   z<-ifelse(grandH==m, 0, min(which(sp*grandH <= (1:k - m + grandH + 1) * alpha)))
-  concP=sp[z]  
+  
+  # if no signal in data, set concP to alpha as only used for filtering
+  concP <- ifelse(z == 0, 0.05, sp[z])
+  
   #remove large objects
   gc()
 

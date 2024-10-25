@@ -2,27 +2,27 @@
 % Please edit documentation in R/corPs.R
 \name{corPs}
 \alias{corPs}
-\title{Calculates p-value}
+\title{Calculate pairwise p-value}
 \usage{
-corPs(om1, om2, type = c("Mat", "Vec"), pthresh)
+corPs(om1, om2, type = c("Mat", "Vec"), pthresh = 0.05)
 }
 \arguments{
-\item{om1, om2}{Subsets of omics data where rows are the probes and columns are samples.
-The rows of the two matrices should define the two-way feature set of interest.}
+\item{om1, om2}{Subsets of two omics data sets where rows are the features and columns are samples.
+The rows of the two matrices would define the two-way feature set of interest.}
 
 \item{type}{Two options are available. Mat: Calculate the correlation of subsets and return a
-matrix; Vec: calculate the full correlation matrix, subset by the given threshold and return a
+matrix; Vec: calculate the correlation matrix, subset by the given threshold and return a
 vector of p-values.}
 
-\item{pthresh}{The threshold by which the p-values are filtered (p>pthresh is removed).
-Default is 0.05}
+\item{pthresh}{Only relevant for type="Vec". The threshold by which the p-values are filtered (p>pthresh is removed).
+Default value is 0.05.}
 }
 \value{
-Either an ff_matrix or a vector, as determined by type parameter.
+A data structure (an ff object) including pairwise p-values.
 }
 \description{
 Calculates pairwise matrix of p-values based on Pearson's correlation test for two matrices.
-To gain speed, the matrix is split into several smaller blocks.
+To gain speed and manage RAM usage, the matrices are split into several smaller chunks.
 }
 \author{
 Mitra Ebrahimpoor

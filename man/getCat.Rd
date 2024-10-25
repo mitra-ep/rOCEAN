@@ -4,23 +4,23 @@
 \alias{getCat}
 \title{Calculate p-categories}
 \usage{
-getCat(ps, gCT, scale = c("col", "row"))
+getCat(mps, gCT, scale = c("col", "row"))
 }
 \arguments{
-\item{ps}{Matrix of p-values, representing association between two omics pathways}
+\item{mps}{Matrix of p-values, representing pairwise associations between two feature sets.}
 
-\item{gCT}{Parameters of the global closed testing provided as the output of simesCT function}
+\item{gCT}{Parameters of the global closed testing, which is the output of simesCT function.}
 
 \item{scale}{Scale of the quantification, a character string. Possible choices are "col" and "row".}
 }
 \value{
-Matrix of p-categories
+Matrix of p-categories.
 }
 \description{
-Calculates cumulative p-categories for a matrix of p-values
+Calculates cumulative p-categories for a given matrix of p-values.
 }
 \seealso{
-[simesCT()]
+\link{simesCT}
 }
 \author{
 Mitra Ebrahimpoor

@@ -4,29 +4,50 @@
 \alias{ocean}
 \title{OCEAN algorithm}
 \usage{
-ocean(om1, om2, gCT, scale = c("pair", "row", "col"), mps, nMax = 100)
+ocean(
+  om1,
+  om2,
+  gCT,
+  scale = c("pair", "row", "col"),
+  mps,
+  nMax = 100,
+  verbose = TRUE
+)
 }
 \arguments{
-\item{om1, om2}{Subsets of omics data where rows are the probes and columns are samples.
-The rows of the two matrices should define the two-way feature set of interest.}
+\item{om1, om2}{Matrix; Subsets of two omics data sets where rows are the features and columns are samples.
+The rows of the two matrices would define the two-way feature set of interest.}
 
-\item{gCT}{Parameters of the global closed testing provided as the output of simesCT function}
+\item{gCT}{Vector; Parameters of the global closed testing, output of simesCT function.}
 
-\item{scale}{Optional, will specify the scale of the quantification, a character string. Possible choices are "pair", "col" and "row".
-If not provided, all scales are returned.}
+\item{scale}{Optional character vector; It specifies the scale of TDP quantification.
+Possible choices are "pair" (pair-TDP), "col" (col-TDP ) and "row" (for row-TDP').
+If not specified, all three scales are returned.}
 
-\item{mps}{Optional, a sub-matrix of the matrix of pairwise associations. If provided, om1 and om2 are not required.
-If not provided, matrix of pairwise associations will be derived from om1 and om2 based on Pearson's correlation.}
+\item{mps}{Optional matrix of p-values; A sub-matrix of pairwise associations, representing the two-way feature set of interest.
+If provided, \code{om1} and \code{om2} are not required. If not provided, matrix of pairwise associations will be
+derived from \code{om1} and \code{om2} based on Pearson's correlation.}
 
-\item{nMax}{Maximum number of steps for branch and bound, if set to 1 branch and bound
-is skipped even if the result is not exact.}
+\item{nMax}{Maximum number of steps for branch and bound algorithm, if set to 1 branch and bound
+is skipped even if the result is not exact. The default value is a 100. The algorithm may
+stop before the \code{nMax} is reached if it converges sooner.}
+
+\item{verbose}{Logical; if \code{TRUE}, progress messages will be displayed during the function's execution. Default is \code{TRUE}.}
 }
 \value{
-TDP is returned for the scales defined by scale.
+TDP is returned for the specified scales, along with number of steps taken and
+convergence status for branch and bound algorithm.
 }
 \description{
-Estimates TDP bounds in 3 scales for a given pathway.
-In case the results is not exact, the function adopts branch and bound if nMax allows.
+Calculates heuristic and lower bound for the true discovery proportion (TDP) in 3 scales for
+a specified two-way feature set (Algorithm 1 in the reference).
+The input is either two omics data sub-matrices or the pre-calculated matrix of p-values for pairwise associations.
+In case the result is not exact, the function adopts branch and bound (Algorithm 2 in the reference), if \code{nMax} allows.
+}
+\seealso{
+\link{simesCT}
+ \link{pairTDP}
+ \link{runbab}
 }
 \author{
 Mitra Ebrahimpoor
