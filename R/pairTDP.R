@@ -17,13 +17,17 @@
 #' 
 #' 
 
-pairTDP<-function(mps,
-                 n,
-                 gCT){
+pairTDP<-function(mps, n, gCT){
   
   #parameters
   grandH=gCT[1]
   alpha=gCT[4]
+  
+  #donotrun if no signal
+  if(gCT[3]==0) stop("No discoveries in this data!")
+  
+  #make sure vector and thresh applied
+  mps<-as.vector(mps[mps<alpha])
   
   #check p-matrix
   if(length(mps)==0){
@@ -36,7 +40,7 @@ pairTDP<-function(mps,
   
   #create vector of U values
   uval<-sapply(1:length(sp), function(u) 1-u+sum( (sp*grandH)<=(u*alpha) ))
-  d<-max(uval)}
+  d<-max(uval, na.rm=TRUE)}
   
   #tdp
   tdp<-d/n

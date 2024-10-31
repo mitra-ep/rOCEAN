@@ -13,7 +13,7 @@
 #' @param pthresh Only relevant for type="Vec". The threshold by which the p-values are filtered (p>pthresh is removed).
 #' Default value is 0.05.
 #' 
-#' @return A data structure (an ff object) including pairwise p-values.
+#' @return Either a matrix or vector of pairwise p-values, as indicated by \code{type} parameter.
 #'
 #' @importFrom ff ff
 #' @importFrom stats var cor pt

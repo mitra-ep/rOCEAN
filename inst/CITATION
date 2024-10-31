@@ -1,0 +1,8 @@
+bibentry(
+  bibtype  = "Article",
+  title="OCEAN: Flexible Feature Set Aggregation for Analysis of   Multi-omics Data", 
+  author="Mitra Ebrahimpoor, Renee Menezes, Ningning Xu, Jelle J. Goeman",
+  year=2024,
+  journal="arXiv:2410.19523",
+  doi= "10.48550/arXiv.2410.19523"
+)

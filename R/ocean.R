@@ -33,18 +33,22 @@
 #'
 #' @examples
 #'
-#' #simulate a pval matrix with 1000X1200 elements
-#' n_cols<-1000
-#' n_rows<-1200
-#' 
-#' pvalmat<-matrix(runif(n_rows*n_cols, min = 0, max = 1), nrow = n_rows, ncol = n_cols)
+#'#number of feature per omic data set
+#'n_cols<-1000
+#'n_rows<-1200
+#'
+#'#random matrix of p-values
+#'set.seed(1258)
+#'pvalmat<-matrix(runif(n_rows*n_cols, min=0, max=1)^3, nrow=n_rows, ncol=n_cols)
 #'
 #'#calculate CT parameters
-#' gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat))
+#'gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat))
 #'
-#'
-#' #calculate TDPs for a random feature set
-#' out<-ocean(mps=pvalmat[1:400,100:750], gCT=gCT)
+#'#calculate TDPs for a random feature set
+#'subpmat<-pvalmat[1:400,100:750]
+#'#Note: it can take loner to run this script if nMax is large
+#'out<-ocean(mps=subpmat, gCT=gCT, nMax=2)
+#'out
 #' 
 #' @export
 #' 

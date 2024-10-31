@@ -29,58 +29,66 @@ You can install the development version of OCEAN from
 install.packages("devtools")
 
 #install the package from GitHub
-devtools::install_github("mitra-ep/OCEA")
+devtools::install_github("mitra-ep/rOCEAN")
 ```
 
 # Simulate data
 
-This is a basic example which shows you how to solve a common problem.
-For the sake of this example, we will simulate a correlation matrix.
-
 ``` r
-library(OCEAN)
+library(rOCEAN)
 
-#reproduce
-set.seed(123)
+#number of feature per omic data set
+n_cols<-1000
+n_rows<-1200
 
-#dimensions
-n_om1<-400
-n_om2<-500
-n_samp<-50
-
-#two random data sets
-om1<-matrix(rnorm(n_om1*n_samp, mean=0, sd=1), nrow=n_om1, ncol=n_samp)
-om2<-matrix(rnorm(n_om2*n_samp, mean=0, sd=1), nrow=n_om2, ncol=n_samp)
-
-#add signal
-signal<-matrix(rnorm(50*n_samp, mean=82, sd=1), nrow=50, ncol=n_samp)
-om1[1:50, ]<-om1[1:50, ]+signal
-om2[21:70, ]<-om2[21:70, ]+signal
+#'#random matrix of p-values
+set.seed(1258)
+pvalmat<-matrix(runif(n_rows*n_cols, min=0, max=1)^3, nrow=n_rows, ncol=n_cols)
 ```
 
 # CT parameters
 
 Calculate the closed testing parameters:
 
-# CT parameters
+# TDP calculation
 
 Calculate TDPs for an imaginary two-way feature set.
 
     #> pair-TDP done. 
-    #> Generating correlation matrix... 
-    #> Correlation matrix ready. 
     #> p-categories matrix for rows ready. 
     #> row-TDP done. 
     #> p-categories matrix for columns ready. 
+    #> Running BaB for column-TDP... 
     #> column-TDP done.
     #> $Pairs
-    #> pTDP 
-    #>    0 
+    #>        pTDP 
+    #> 0.007936508 
     #> 
     #> $Rows
-    #> row-TDP   nStep 
-    #>       0       1 
+    #>   row-TDP     nStep 
+    #> 0.5061728 1.0000000 
     #> 
     #> $Columns
-    #> column-TDP      nStep 
-    #>          0          1
+    #> cHeuristic     cBound      nStep 
+    #>  0.3839286  0.3750000  2.0000000
+
+In the example above `nMax=2` so only 2 steps of BaB were applied for
+column-TDP, we can increase the number of steps to make the bound
+narrower:
+
+    #> p-categories matrix for columns ready. 
+    #> Running BaB for column-TDP... 
+    #> column-TDP done.
+    #> $Columns
+    #>  cHeuristic      cBound       nStep 
+    #>   0.3839286   0.3750000 100.0000000
+
+Calculate TDPs for a case where the initial outcome is unsure and branch
+and bound will be adopted for row-TDP.
+
+    #> p-categories matrix for rows ready. 
+    #> Running BaB for row-TDP... 
+    #> row-TDP done.
+    #> $Rows
+    #>  rHeuristic      rBound       nStep 
+    #>   0.9600000   0.9466667 100.0000000

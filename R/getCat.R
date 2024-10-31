@@ -18,11 +18,15 @@
 
 getCat<-function(mps, gCT, scale=c("col","row")){
   
+  #donotrun if no signal
+  if(gCT[3]==0) stop("No discoveries in this data!")
+  
   #parameters
-  grandH=gCT[1]
+  grandH=gCT[1] 
   z=gCT[3]
   alpha=gCT[4]
   m=gCT[5]
+  
   
   scale<-match.arg(scale)
   

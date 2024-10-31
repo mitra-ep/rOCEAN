@@ -44,6 +44,26 @@ a specified two-way feature set (Algorithm 1 in the reference).
 The input is either two omics data sub-matrices or the pre-calculated matrix of p-values for pairwise associations.
 In case the result is not exact, the function adopts branch and bound (Algorithm 2 in the reference), if \code{nMax} allows.
 }
+\examples{
+
+#number of feature per omic data set
+n_cols<-1000
+n_rows<-1200
+
+#random matrix of p-values
+set.seed(1258)
+pvalmat<-matrix(runif(n_rows*n_cols, min=0, max=1)^3, nrow=n_rows, ncol=n_cols)
+
+#calculate CT parameters
+gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat))
+
+#calculate TDPs for a random feature set
+subpmat<-pvalmat[1:400,100:750]
+#Note: it can take loner to run this script if nMax is large
+out<-ocean(mps=subpmat, gCT=gCT, nMax=2)
+out
+
+}
 \seealso{
 \link{simesCT}
  \link{pairTDP}

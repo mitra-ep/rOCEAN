@@ -18,7 +18,7 @@ vector of p-values.}
 Default value is 0.05.}
 }
 \value{
-A data structure (an ff object) including pairwise p-values.
+Either a matrix or vector of pairwise p-values, as indicated by \code{type} parameter.
 }
 \description{
 Calculates pairwise matrix of p-values based on Pearson's correlation test for two matrices.

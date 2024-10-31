@@ -27,7 +27,7 @@ simesCT<-function(om1, om2, mps, m, alpha=0.05){
   if(!missing(om1) && !missing(om2)){
     if(ncol(om1)!=ncol(om2)) stop("ncol of the matrices should match!")
   }else{
-      if (missing(mps)) stop("No data pair or matrix of p-values provided.")}
+      if(missing(mps)) stop("No data pair or matrix of p-values provided.")}
 
   #mps not provided
   if (missing(mps)){
@@ -39,13 +39,13 @@ simesCT<-function(om1, om2, mps, m, alpha=0.05){
   }
   sp<-sort(sp[])
   k<-length(sp)
-  grandH<- m-max(0, ceiling(max(1:k - (m-1:k) * sp / (alpha - sp))))
+  grandH<- m - max(0, ceiling(max(1:k - (m-1:k) * sp / (alpha - sp))))
 
   #get size of concentration set
   z<-ifelse(grandH==m, 0, min(which(sp*grandH <= (1:k - m + grandH + 1) * alpha)))
   
-  # if no signal in data, set concP to alpha as only used for filtering
-  concP<-ifelse(z == 0, 0.05, sp[z])
+  # if no signal in data, set concP to NA
+  concP<-ifelse(z==0, NA, sp[z])
   
   #remove large objects
   gc()
