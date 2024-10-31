@@ -9,10 +9,6 @@
 #'  
 #' @return A list of two objects, the heuristic and the lower bound for true number of discoveries
 #'
-#' @author Mitra Ebrahimpoor
-#'
-#' \email{m.ebrahimpoor@@lumc.nl}
-#'
 #' @seealso \link{getCat}
 #'
 #' @export

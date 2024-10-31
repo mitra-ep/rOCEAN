@@ -22,8 +22,3 @@ Calculates the TDP over pairs; based on SEA algorithm
 \seealso{
 \link[rSEA]{SEA}, \link{simesCT}
 }
-\author{
-Mitra Ebrahimpoor
-
-\email{m.ebrahimpoor@lumc.nl}
-}

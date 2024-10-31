@@ -22,8 +22,3 @@ Calculates cumulative p-categories for a given matrix of p-values.
 \seealso{
 \link{simesCT}
 }
-\author{
-Mitra Ebrahimpoor
-
-\email{m.ebrahimpoor@lumc.nl}
-}

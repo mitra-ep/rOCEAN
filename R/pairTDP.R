@@ -10,9 +10,6 @@
 #'  
 #' @return Proportion of true discoveries out of n pairs of features.
 #'
-#' @author Mitra Ebrahimpoor
-#'
-#' \email{m.ebrahimpoor@@lumc.nl}
 #'
 #' @seealso \link[rSEA]{SEA}, \link{simesCT}
 #' 

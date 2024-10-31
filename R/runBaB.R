@@ -13,10 +13,6 @@
 #' @return A list, including the heuristic and the bound for the number of true discoveries, along with number of steps
 #' taken and convergence status.
 #'
-#' @author Mitra Ebrahimpoor
-#'
-#' \email{m.ebrahimpoor@@lumc.nl}
-#'
 #' @seealso \link{getCat}
 #'  \link{singleStep}
 #' 

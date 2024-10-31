@@ -5,8 +5,8 @@
 \title{OCEAN algorithm}
 \usage{
 ocean(
-  om1,
-  om2,
+  pm1,
+  pm2,
   gCT,
   scale = c("pair", "row", "col"),
   mps,
@@ -15,7 +15,7 @@ ocean(
 )
 }
 \arguments{
-\item{om1, om2}{Matrix; Subsets of two omics data sets where rows are the features and columns are samples.
+\item{pm1, pm2}{Matrix; Subsets of two omics data sets where rows are the features and columns are samples.
 The rows of the two matrices would define the two-way feature set of interest.}
 
 \item{gCT}{Vector; Parameters of the global closed testing, output of simesCT function.}
@@ -25,8 +25,8 @@ Possible choices are "pair" (pair-TDP), "col" (col-TDP ) and "row" (for row-TDP'
 If not specified, all three scales are returned.}
 
 \item{mps}{Optional matrix of p-values; A sub-matrix of pairwise associations, representing the two-way feature set of interest.
-If provided, \code{om1} and \code{om2} are not required. If not provided, matrix of pairwise associations will be
-derived from \code{om1} and \code{om2} based on Pearson's correlation.}
+If provided, \code{pm1} and \code{pm2} are not required. If not provided, matrix of pairwise associations will be
+derived from \code{pm1} and \code{pm2} based on Pearson's correlation.}
 
 \item{nMax}{Maximum number of steps for branch and bound algorithm, if set to 1 branch and bound
 is skipped even if the result is not exact. The default value is a 100. The algorithm may
@@ -48,9 +48,4 @@ In case the result is not exact, the function adopts branch and bound (Algorithm
 \link{simesCT}
  \link{pairTDP}
  \link{runbab}
-}
-\author{
-Mitra Ebrahimpoor
-
-\email{m.ebrahimpoor@lumc.nl}
 }

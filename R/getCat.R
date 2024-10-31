@@ -10,10 +10,6 @@
 #' 
 #' @return Matrix of p-categories.
 #'
-#' @author Mitra Ebrahimpoor
-#'
-#' \email{m.ebrahimpoor@@lumc.nl}
-#'
 #' @seealso \link{simesCT}
 #'
 #' @export

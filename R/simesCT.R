@@ -16,10 +16,6 @@
 #' @return Vector of integers: grand H value, concentration p-value, size of concentration set z,
 #' size of the original pair-wise associations matrix and the type I error level used in calculations.
 #'
-#' @author Mitra Ebrahimpoor
-#'
-#' \email{m.ebrahimpoor@@lumc.nl}
-#'
 #' @references See more details in "Hommel's procedure in linear time" doi: 10.1002/bimj.201700316.
 #'
 #' @export
@@ -39,7 +35,7 @@ simesCT<-function(om1, om2, mps, m, alpha=0.05){
   m<-as.numeric(nrow(om1))*as.numeric(nrow(om2))
   sp<-corPs(om1, om2, type= "Vec", pthresh=alpha)}
   else{
-    sp<-as.vector(mps<alpha)
+    sp<-as.vector(mps[mps<alpha])
   }
   sp<-sort(sp[])
   k<-length(sp)
@@ -49,7 +45,7 @@ simesCT<-function(om1, om2, mps, m, alpha=0.05){
   z<-ifelse(grandH==m, 0, min(which(sp*grandH <= (1:k - m + grandH + 1) * alpha)))
   
   # if no signal in data, set concP to alpha as only used for filtering
-  concP <- ifelse(z == 0, 0.05, sp[z])
+  concP<-ifelse(z == 0, 0.05, sp[z])
   
   #remove large objects
   gc()

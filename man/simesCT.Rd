@@ -28,8 +28,3 @@ Calculates five parameters from closed testing with Simes local tests based on r
 \references{
 See more details in "Hommel's procedure in linear time" doi: 10.1002/bimj.201700316.
 }
-\author{
-Mitra Ebrahimpoor
-
-\email{m.ebrahimpoor@lumc.nl}
-}

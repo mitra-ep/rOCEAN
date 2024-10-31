@@ -21,8 +21,3 @@ the Algorithm 1 introduced in paper.
 \seealso{
 \link{getCat}
 }
-\author{
-Mitra Ebrahimpoor
-
-\email{m.ebrahimpoor@lumc.nl}
-}

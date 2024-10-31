@@ -5,7 +5,7 @@
 #' The input is either two omics data sub-matrices or the pre-calculated matrix of p-values for pairwise associations.
 #' In case the result is not exact, the function adopts branch and bound (Algorithm 2 in the reference), if \code{nMax} allows.
 #'
-#' @param om1,om2  Matrix; Subsets of two omics data sets where rows are the features and columns are samples.
+#' @param pm1,pm2  Matrix; Subsets of two omics data sets where rows are the features and columns are samples.
 #' The rows of the two matrices would define the two-way feature set of interest.
 #' 
 #' @param gCT Vector; Parameters of the global closed testing, output of simesCT function.
@@ -15,8 +15,8 @@
 #' If not specified, all three scales are returned.
 #' 
 #' @param mps Optional matrix of p-values; A sub-matrix of pairwise associations, representing the two-way feature set of interest.
-#' If provided, \code{om1} and \code{om2} are not required. If not provided, matrix of pairwise associations will be
-#' derived from \code{om1} and \code{om2} based on Pearson's correlation.
+#' If provided, \code{pm1} and \code{pm2} are not required. If not provided, matrix of pairwise associations will be
+#' derived from \code{pm1} and \code{pm2} based on Pearson's correlation.
 #' 
 #' @param nMax Maximum number of steps for branch and bound algorithm, if set to 1 branch and bound
 #' is skipped even if the result is not exact. The default value is a 100. The algorithm may
@@ -26,20 +26,30 @@
 #' 
 #' @return TDP is returned for the specified scales, along with number of steps taken and
 #' convergence status for branch and bound algorithm.
-#'
-#' @author Mitra Ebrahimpoor
-#'
-#' \email{m.ebrahimpoor@@lumc.nl}
 #' 
 #' @seealso \link{simesCT}
 #'  \link{pairTDP}
 #'  \link{runbab}
 #'
+#' @examples
+#'
+#' #simulate a pval matrix with 1000X1200 elements
+#' n_cols<-1000
+#' n_rows<-1200
+#' 
+#' pvalmat<-matrix(runif(n_rows*n_cols, min = 0, max = 1), nrow = n_rows, ncol = n_cols)
+#'
+#'#calculate CT parameters
+#' gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat))
+#'
+#'
+#' #calculate TDPs for a random feature set
+#' out<-ocean(mps=pvalmat[1:400,100:750], gCT=gCT)
+#' 
 #' @export
 #' 
-#' 
 
-ocean<-function(om1, om2, gCT, scale=c("pair", "row", "col"),
+ocean<-function(pm1, pm2, gCT, scale=c("pair", "row", "col"),
                   mps, nMax=100, verbose = TRUE) {
 
   #initiate
@@ -58,8 +68,8 @@ ocean<-function(om1, om2, gCT, scale=c("pair", "row", "col"),
   
   if(any("pair" %in% scale) & missing(mps)) {
     #calculate vector of p values
-    pps<-corPs(om1, om2, type="Vec", pthresh=concp)
-    ptdp<-pairTDP(pps, nrow(om1) * nrow(om2), gCT)
+    pps<-corPs(pm1, pm2, type="Vec", pthresh=concp)
+    ptdp<-pairTDP(pps, nrow(pm1) * nrow(pm2), gCT)
     cat_if_verbose("pair-TDP done. \n")
   }
   
@@ -73,7 +83,7 @@ ocean<-function(om1, om2, gCT, scale=c("pair", "row", "col"),
   if(any(c("row", "col") %in% scale) & missing(mps)) {
     # calculate matrix of p values
     cat_if_verbose("Generating correlation matrix... \n")
-    mps<-corPs(om1, om2, type="Mat")
+    mps<-corPs(pm1, pm2, type="Mat")
     cat_if_verbose("Correlation matrix ready. \n")
   }
   

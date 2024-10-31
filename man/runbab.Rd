@@ -26,8 +26,3 @@ Performs B&B when the bound are not exact
 \link{getCat}
  \link{singleStep}
 }
-\author{
-Mitra Ebrahimpoor
-
-\email{m.ebrahimpoor@lumc.nl}
-}

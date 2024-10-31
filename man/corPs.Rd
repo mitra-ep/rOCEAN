@@ -4,10 +4,10 @@
 \alias{corPs}
 \title{Calculate pairwise p-value}
 \usage{
-corPs(om1, om2, type = c("Mat", "Vec"), pthresh = 0.05)
+corPs(pm1, pm2, type = c("Mat", "Vec"), pthresh = 0.05)
 }
 \arguments{
-\item{om1, om2}{Subsets of two omics data sets where rows are the features and columns are samples.
+\item{pm1, pm2}{Subsets of two omics data sets where rows are the features and columns are samples.
 The rows of the two matrices would define the two-way feature set of interest.}
 
 \item{type}{Two options are available. Mat: Calculate the correlation of subsets and return a
@@ -23,9 +23,4 @@ A data structure (an ff object) including pairwise p-values.
 \description{
 Calculates pairwise matrix of p-values based on Pearson's correlation test for two matrices.
 To gain speed and manage RAM usage, the matrices are split into several smaller chunks.
-}
-\author{
-Mitra Ebrahimpoor
-
-\email{m.ebrahimpoor@lumc.nl}
 }
