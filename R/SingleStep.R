@@ -7,12 +7,39 @@
 #' 
 #' @param B Optional, to identify rows to be fixed (1) or removed (0) while splitting the search space.
 #'  
-#' @return A list of two objects, the heuristic and the lower bound for true number of discoveries
+#' @return A list of two objects, the lower bound and a heuristic for the number of true discoveries
 #'
 #' @seealso \link{getCat}
 #'
-#' @export
+#' @examples
 #' 
+#' #number of features per omic data set
+#' n_cols<-100
+#' n_rows<-120
+#' 
+#' #random matrix of p-values
+#' set.seed(1258)
+#' pvalmat<-matrix(runif(n_rows*n_cols, min=0, max=1)^5, nrow=n_rows, ncol=n_cols)
+#' 
+#' #calculate CT parameters
+#' gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat))
+#' 
+#' #define the two-way feature set
+#' subpmat<-pvalmat[61:75,81:100]
+#' 
+#' #calculate p-categories matrix for feature set by rows
+#' rCat<-getCat(mps=subpmat, gCT, scale="row")
+#' 
+#' #get the bounds based on algorithm 1
+#' singleStep(rCat)
+#' 
+#' #calculate p-categories matrix for feature set by columns
+#' cCat<-getCat(mps=subpmat, gCT, scale="col")
+#' 
+#' #get the bounds based on algorithm 1 while removing column 1 and forcing column 2
+#' singleStep(cCat, B=c(0,1))
+#' 
+#' @export
 #' 
 
 singleStep<-function(sCat, B){
@@ -116,5 +143,5 @@ singleStep<-function(sCat, B){
   Bo=nrow(sCat)-(Bj-1)
   
   ###return the bound for true discoveries
-  return(list("heuristic"=Hu, "bound"=Bo))
+  return(list("bound"=Bo,"heuristic"=Hu))
 }

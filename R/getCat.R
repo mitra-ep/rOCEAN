@@ -1,4 +1,4 @@
-#' @title Calculate p-categories
+#' @title Calculate cumulative p-categories
 #'
 #' @description Calculates cumulative p-categories for a given matrix of p-values.
 #'
@@ -11,6 +11,28 @@
 #' @return Matrix of p-categories.
 #'
 #' @seealso \link{simesCT}
+#'
+#' @examples
+#' 
+#' #number of features per omic data set
+#' n_cols<-100
+#' n_rows<-120
+#' 
+#' #random matrix of p-values
+#' set.seed(1258)
+#' pvalmat<-matrix(runif(n_rows*n_cols, min=0, max=1)^5, nrow=n_rows, ncol=n_cols)
+#' 
+#' #calculate CT parameters
+#' gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat))
+#' 
+#' #define the two-way feature set
+#' subpmat<-pvalmat[61:75,81:100]
+#' 
+#' #calculate p-categories matrix for feature set by rows
+#' rCat<-getCat(mps=subpmat, gCT, scale="row")
+#'
+#' #calculate p-categories matrix for feature set by columns
+#' cCat<-getCat(mps=subpmat, gCT, scale="col")
 #'
 #' @export
 #' 

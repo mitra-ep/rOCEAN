@@ -19,6 +19,25 @@
 #' @importFrom stats var cor pt
 #' @importFrom utils flush.console
 #' 
+#' @examples
+#'
+#'#number of subjects
+#'n<-30
+#'#number of features from omic1 in pathway
+#'n_rows<-20
+#'#number of features from omic2 in pathway
+#'n_cols<-30
+#'
+#'#random datasets
+#'set.seed(1258)
+#'pm1<-matrix(runif(n_rows*n, min=0, max=1)^8, nrow=n_rows, ncol=n)
+#'pm2<-matrix(runif(n_rows*n, min=0, max=1)^8, nrow=n_rows, ncol=n)
+#'
+#'#calculate correlation matrix
+#'pmat<-corPs(pm1, pm2, type="Mat")
+#'
+#'pmat
+#' 
 #' @export
 #' 
 

@@ -16,6 +16,31 @@
 #' @seealso \link{getCat}
 #'  \link{singleStep}
 #' 
+#' @examples
+#' 
+#' #number of features per omic data set
+#' n_cols<-100
+#' n_rows<-120
+#' 
+#' #random matrix of p-values
+#' set.seed(1258)
+#' pvalmat<-matrix(runif(n_rows*n_cols, min=0, max=1)^4, nrow=n_rows, ncol=n_cols)
+#' 
+#' #calculate CT parameters
+#' gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat))
+#' 
+#' #define the two-way feature set
+#' subpmat<-pvalmat[1:10,31:40]
+#' 
+#' #calculate p-categories matrix for feature set by rows
+#' rCat<-getCat(mps=subpmat, gCT, scale="row")
+#' 
+#' #calculate the heuristic and bound
+#' SSout<-singleStep(rCat)
+#' 
+#' #run branch nd bound
+#' runbab(rCat, SSout$heuristic, SSout$bound, nMax=800)
+#' 
 #' @export
 #' 
 #' 

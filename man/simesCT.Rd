@@ -25,6 +25,20 @@ Calculates five parameters from closed testing with Simes local tests based on r
  These parameter are unique per data/alpha-level combination and do not depend on feature sets. Calculation may
  be somewhat long depending on the size of data sets and PC configurations.
 }
+\examples{
+
+#number of feature per omic data set
+n_cols<-100
+n_rows<-120
+
+#random matrix of p-values
+set.seed(1258)
+pvalmat<-matrix(runif(n_rows*n_cols, min=0, max=1)^6, nrow=n_rows, ncol=n_cols)
+
+#calculate CT parameters
+gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat))
+
+}
 \references{
-See more details in "Hommel's procedure in linear time" doi: 10.1002/bimj.201700316.
+See more details in "Hommel's procedure in linear time" doi:10.1002/bimj.201700316.
 }

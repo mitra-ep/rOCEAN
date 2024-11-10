@@ -19,6 +19,26 @@ Proportion of true discoveries out of n pairs of features.
 \description{
 Calculates the TDP over pairs; based on SEA algorithm
 }
+\examples{
+
+#number of features per omic data set
+n_cols<-100
+n_rows<-120
+
+#random matrix of p-values
+set.seed(1258)
+pvalmat<-matrix(runif(n_rows*n_cols, min=0, max=1)^5, nrow=n_rows, ncol=n_cols)
+
+#calculate CT parameters
+gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat))
+
+#define the two-way feature set
+subpmat<-pvalmat[61:80,26:50]
+
+#calculate pairwise TDP for feature set
+pairTDP(subpmat, n=nrow(subpmat)*ncol(subpmat), gCT)
+
+}
 \seealso{
 \link[rSEA]{SEA}, \link{simesCT}
 }
