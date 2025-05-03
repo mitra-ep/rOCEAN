@@ -67,8 +67,8 @@ subpmat <- pvalmat[1:40, 10:75]
 #apply ocean function
 out <- ocean(mps = subpmat, gCT = gCT, nMax = 2)
 ```
-This is an example output.
-
+This is an example output. 
+<pre><code class="language-markdown"> ```
     #> pair-TDP done. 
     #> p-categories matrix for rows ready. 
     #> row-TDP done. 
@@ -86,7 +86,8 @@ This is an example output.
     #> $Columns
     #> cHeuristic     cBound      nStep 
     #>  0.3839286  0.3750000  2.0000000
-
+ ``` </code></pre>
+ 
 In the example above `nMax=2` so only 2 steps of BaB were applied for column-TDP, you can increase nMax for tighter bounds or leave it at the default of 100 or much higher for full refinement.
 
 ```{r}
