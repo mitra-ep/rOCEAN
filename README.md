@@ -94,13 +94,16 @@ In the example above `nMax=2` so only 2 steps of BaB were applied for column-TDP
 #apply ocean function
 out <- ocean(mps = subpmat, gCT = gCT, nMax = 100)
 ```
+The results:
+<pre><code class="language-markdown"> ```
     #> p-categories matrix for columns ready. 
     #> Running BaB for column-TDP... 
     #> column-TDP done.
     #> $Columns
     #>  cHeuristic      cBound       nStep 
     #>   0.3839286   0.3750000 100.0000000
-
+ ``` </code></pre>
+ 
 # Raw data
 
 In practice, you may sart with raw data. 
