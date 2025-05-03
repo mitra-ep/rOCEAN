@@ -53,7 +53,7 @@ gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat))
 The simesCT() function calculates five key parameters needed for downstream *TDP* estimation. For more details on these parameters, see:
 Meijer, R. J., & Goeman, J. J. (2019). *Hommel’s procedure in linear time*. _Biometrika_, **106**(2), 483–489. [https://doi.org/10.1093/biomet/asz006](https://doi.org/10.1093/biomet/asz006)
 
-These parameters are independent of any specific feature set and only need to be computed once for a given dataset and $\alpha$ level. You can reuse gCT for multiple runs of ocean() with different feature sets.
+These parameters are independent of any specific feature set and only need to be computed once for a given dataset and $alpha$ level. You can reuse gCT for multiple runs of ocean() with different feature sets.
 
 ### *TDP* Calculation
 
@@ -123,7 +123,8 @@ Here’s how to replicate the steps above for real data:
 - Estimate TDPs: this step is also identical to case of simulated data.
 
 __More on feature set lists__: 
-In omics studies, a feature set refers to a collection of genes, proteins, or other molecules that work together to carry out a specific biological function or process. These feature set represent interconnected biochemical reactions, molecular interactions, or regulatory networks within a cell, tissue, or organism. For example, in genomics, a feature set may refer to a set of genes involved in a particular process like cell cycle regulation, apoptosis (programmed cell death), or immune response. In proteomics, feature sets often involve proteins and their interactions in signaling cascades, metabolic cycles, or other molecular functions. And finally for DNA CN data, chromosome arms, cytobands, or known CNV hotspots are some common feature sets.\\
+In omics studies, a feature set refers to a collection of genes, proteins, or other molecules that work together to carry out a specific biological function or process. These feature set represent interconnected biochemical reactions, molecular interactions, or regulatory networks within a cell, tissue, or organism. For example, in genomics, a feature set may refer to a set of genes involved in a particular process like cell cycle regulation, apoptosis (programmed cell death), or immune response. In proteomics, feature sets often involve proteins and their interactions in signaling cascades, metabolic cycles, or other molecular functions. And finally for DNA CN data, chromosome arms, cytobands, or known CNV hotspots are some common feature sets.
+
 In the context of rOCEAN, we use predefined lists of features that belong to a particular feature set. These feature sets are often curated from databases like KEGG, Reactome, or MSigDB, which provide comprehensive collections of feature sets for various organisms. Each list should contain set of feature that correspond to a specific biological pathway. The elements of the list are subsets of row names from the corresponding omics datasets. For example, featureSet1[[1]] might be a list of gene names associated with a specific Hallmark pathway. Combination of these feature sets will define the two-way feture sets. Refer to Refer to [rSEA's vignette](https://github.com/cran/rSEA/blob/master/vignettes/rSEA_vignette.Rmd) for more details on the feature set lists.
 
 Now lets see some example code:
@@ -136,7 +137,8 @@ load("PATH_TO_DATA/omics2.RData")
 #get closed testing parameters for the omics pair
 gCT<-simesCT(omics1, omics2, alpha=0.05)
 ```
-Once more, note that this is only done once for each pair of omics data.\\
+Once more, note that this is only done once for each pair of omics data.
+
 Depending on the size of your data and your hardware, this step may take considerable time to complete. For large datasets, consider using a pre-computed $p$-value matrix and applying threshold.
 If pvalmat is the pre-computed $p$-value matri, then using the following can speed up the calculation.
 
@@ -144,7 +146,7 @@ If pvalmat is the pre-computed $p$-value matri, then using the following can spe
 spvalmat<-as.vector(pvalmat[pvalmat<0.05])
 gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat)
 ```
-Note that if the thresholded matrix is used, m is non-optional to pass the original dimension of the data to function.\\
+Note that if the thresholded matrix is used, m is non-optional to pass the original dimension of the data to function.
 
 The next step is estimation of *TDP*s.
 
