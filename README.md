@@ -1,15 +1,16 @@
 
 # OCEAN for multi-omics
+This document provides a walkthrough for using the rOCEAN R package to analyze multi-omics data using closed testing procedures.
 
-OCEAN is a flexible feature set testing method for analysis of multi-omics. For a pair of omics, either matrix of pairwise associations is derived from a pair of pre-processed omics data (using corPs, embedded in ocean) or the p-value matrix provided by the user is used.
-This matrix is the input for simesCT, which calculates the closed testing parameters based on Simes local tests for a given alpha. Then for any given two-way feature set, 3 error rates are calculates using ocean function. 
-* TDP: proportion of omics pairs that are associated.
-* row-TDP: proportion of rows that are associated with at least one column.
-* column-TPD: proportion of columns that are associated with at least one row.
+## Overview
+OCEAN is a flexible feature set testing method for analysis of multi-omics. For a pair of omics, either matrix of pairwise associations is derived from a pair of pre-processed omics data (using corPs, embedded in ocean) or the p-value matrix provided by the user is used. This matrix is the input for simesCT, which calculates the closed testing parameters based on Simes local tests for a given alpha. Then for any given two-way feature set, 3 error rates are calculates using ocean function. 
+* *TDP*: proportion of omics pairs that are associated.
+* row-*TDP*: proportion of rows that are associated with at least one column.
+* column-*TDP*: proportion of columns that are associated with at least one row.
   
-TDP is calculated as an extension of SEA algorithm (see rSEA R-package). For row-TDP and column-TDP a lower-bound (B) and heuristic (H) is calculated. Optionally, if the results are not exact (B not equal to H), it is possible to run branch and bound algorithm (using runBaB, embedded in ocean) to get an exact result. There are no limits on the number of feature sets being tested and the family-wise error rate is always controlled at level aplpha as set in the first step.
+*TDP* is calculated as an extension of SEA algorithm (see rSEA R-package). For row-*TDP* and column-*TDP* a lower-bound (B) and heuristic (H) is calculated. Optionally, if the results are not exact (B not equal to H), it is possible to run branch and bound algorithm (using runBaB, embedded in ocean) to get an exact result. There are no limits on the number of feature sets being tested and the family-wise error rate is always controlled at level alpha as set in the first step.
 
-# Installation
+## Installation
 
 You can install the development version of OCEAN from
 [GitHub](https://github.com/) with:
@@ -20,13 +21,13 @@ install.packages("devtools")
 #install the package from GitHub
 devtools::install_github("mitra-ep/rOCEAN")
 ```
-Also, a CRAN version is currently availble, which can be installed using:
+Also, a CRAN version is currently available, which can be installed using:
 
 ``` r
 install.packages("rOCEAN")
 
 ```
-# Simulated data
+## Simulated Data
 
 To help you get started, here’s how to simulate a very simple and small dataset of p-values that you can use to test the functions of package.
 This code generates a 1200 x 1000 matrix of p-values, with some signal intentionally added.
@@ -41,7 +42,7 @@ set.seed(1258)
 pvalmat<-matrix(runif(n_rows*n_cols, min=0, max=1)^3, nrow=n_rows, ncol=n_cols)
 ```
 
-## CT parameters
+### CT Parameters
 
 Step one is to calculate the closed testing parameters:
 
@@ -49,15 +50,15 @@ Step one is to calculate the closed testing parameters:
 library(rOCEAN)
 gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat))
 ```
-The simesCT() function calculates five key parameters needed for downstream TDP estimation. For more details on these parameters, see:
+The simesCT() function calculates five key parameters needed for downstream *TDP* estimation. For more details on these parameters, see:
 Meijer, R. J., & Goeman, J. J. (2019). *Hommel’s procedure in linear time*. _Biometrika_, **106**(2), 483–489. [https://doi.org/10.1093/biomet/asz006](https://doi.org/10.1093/biomet/asz006)
 
 These parameters are independent of any specific feature set and only need to be computed once for a given dataset and $\alpha$ level. You can reuse gCT for multiple runs of ocean() with different feature sets.
 
-## TDP calculation
+### *TDP* Calculation
 
 Now using the simulated p-value matrix, you can test the core functionality of rOCEAN based on a small two-way feature set.
-Foolowing code estimates the true discovery proportion (TDP) at three levels, for the given feature set:
+Following code estimates the true discovery proportion (TDP) at three levels, for the given feature set:
 
 ```{r}
 library(rOCEAN)
@@ -68,7 +69,7 @@ subpmat <- pvalmat[1:40, 10:75]
 out <- ocean(mps = subpmat, gCT = gCT, nMax = 2)
 ```
 This is an example output. 
-<pre><code class="language-markdown"> ```
+```r
     #> pair-TDP done. 
     #> p-categories matrix for rows ready. 
     #> row-TDP done. 
@@ -86,7 +87,7 @@ This is an example output.
     #> $Columns
     #> cHeuristic     cBound      nStep 
     #>  0.3839286  0.3750000  2.0000000
- ``` </code></pre>
+ ```
  
 In the example above `nMax=2` so only 2 steps of BaB were applied for column-TDP, you can increase nMax for tighter bounds or leave it at the default of 100 or much higher for full refinement.
 
@@ -95,19 +96,19 @@ In the example above `nMax=2` so only 2 steps of BaB were applied for column-TDP
 out <- ocean(mps = subpmat, gCT = gCT, nMax = 100)
 ```
 The results:
-<pre><code class="language-markdown"> ```
+```r
     #> p-categories matrix for columns ready. 
-    #> Running BaB for column-TDP... 
-    #> column-TDP done.
+    #> Running BaB for column-*TDP*... 
+    #> column-*TDP* done.
     #> $Columns
     #>  cHeuristic      cBound       nStep 
     #>   0.3839286   0.3750000 100.0000000
- ``` </code></pre>
+ ```
  
-# Raw data
+## Omics Data
 
-In practice, you may sart with raw data. 
-n the context of rOCEAN, the two omics datasets (omics1 and omics2) should have the following structure:
+In practice, you may start with raw data. 
+In the context of rOCEAN, the two omics datasets (omics1 and omics2) should have the following structure:
 
 * Rows represent the features (e.g., genes, proteins, or other biological measurements).
 * Columns represent the subjects or samples (e.g., individuals or experimental conditions).
@@ -122,8 +123,8 @@ Here’s how to replicate the steps above for real data:
 - Estimate TDPs: this step is also identical to case of simulated data.
 
 __More on feature set lists__: 
-In omics studies, a feature set refers to a collection of genes, proteins, or other molecules that work together to carry out a specific biological function or process. These feature set represent interconnected biochemical reactions, molecular interactions, or regulatory networks within a cell, tissue, or organism. For example, in genomics, a feature set may refer to a set of genes involved in a particular process like cell cycle regulation, apoptosis (programmed cell death), or immune response. In proteomics, feature sets often involve proteins and their interactions in signaling cascades, metabolic cycles, or other molecular functions. And finally for DNA CN data, chromosome arms, cytobands, or known CNV hotspots are some common feture sets.\\
-In the context of rOCEAN, we use predefined lists of features that belong to a particular feature set. These feature sets are often curated from databases like KEGG, Reactome, or MSigDB, which provide comprehensive collections of feature sets for various organisms. Each list should contain set of feature that correspond to a specific biological pathway. The eleents of the list are subsets of row names from the corresponding omics datasets. For example, featureSet1[[1]] might be a list of gene names associated with a specific Hallmark pathway. Combination of these feature sets will define the two-way feture sets. Refer to  [rSEA's vignette](https://github.com/cran/rSEA/blob/master/vignettes/rSEA_vignette.Rmd)] for more details on the feature set lists.
+In omics studies, a feature set refers to a collection of genes, proteins, or other molecules that work together to carry out a specific biological function or process. These feature set represent interconnected biochemical reactions, molecular interactions, or regulatory networks within a cell, tissue, or organism. For example, in genomics, a feature set may refer to a set of genes involved in a particular process like cell cycle regulation, apoptosis (programmed cell death), or immune response. In proteomics, feature sets often involve proteins and their interactions in signaling cascades, metabolic cycles, or other molecular functions. And finally for DNA CN data, chromosome arms, cytobands, or known CNV hotspots are some common feature sets.\\
+In the context of rOCEAN, we use predefined lists of features that belong to a particular feature set. These feature sets are often curated from databases like KEGG, Reactome, or MSigDB, which provide comprehensive collections of feature sets for various organisms. Each list should contain set of feature that correspond to a specific biological pathway. The elements of the list are subsets of row names from the corresponding omics datasets. For example, featureSet1[[1]] might be a list of gene names associated with a specific Hallmark pathway. Combination of these feature sets will define the two-way feture sets. Refer to Refer to [rSEA's vignette](https://github.com/cran/rSEA/blob/master/vignettes/rSEA_vignette.Rmd) for more details on the feature set lists.
 
 Now lets see some example code:
 
@@ -140,12 +141,12 @@ Depending on the size of your data and your hardware, this step may take conside
 If pvalmat is the pre-computed $p$-value matri, then using the following can speed up the calculation.
 
 ```{r}
-spvalmat=pvalmat[pvalmat<0.05]
+spvalmat<-as.vector(pvalmat[pvalmat<0.05])
 gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat)
 ```
-Note that if the thresholded matrix is used, m is non-optional to pass the original dimention of the data to function.\\
+Note that if the thresholded matrix is used, m is non-optional to pass the original dimension of the data to function.\\
 
-The next step is estimation of TDPs.
+The next step is estimation of *TDP*s.
 
 ```{r}
 #load feature sets
