@@ -62,14 +62,33 @@ Now using the simulated p-value matrix, you can test the core functionality of r
 Following code estimates the true discovery proportion (TDP) at three levels, for the given feature set:
 
 ```r
-library(rOCEAN)
 #define a two-way feature set
 subpmat <- pvalmat[1:40, 10:75]
 
 #apply ocean function
 out <- ocean(mps = subpmat, gCT = gCT, nMax = 2)
 ```
-This is an example output. 
+
+And the output is organizaed as follows. If branch and bound is adopted nStep will be higher than 1.
+
+```
+    #> $Pairs
+    #>       pTDP 
+    #> 0.00530303 
+    #> 
+    #> $Rows
+    #> row-TDP     nStep 
+    #>   0.275     1.000
+    #>
+    #> $Columns
+    #>
+    #> column-TDP    nStep 
+    #>  0.1515152  1.00000  
+
+```
+
+
+This is an example output where branch and bound was adopted for the rows, and both Heuristice (H) and Bound (B) are returned after 2 steps.
 ```
     #> pair-TDP done. 
     #> p-categories matrix for rows ready. 
@@ -90,13 +109,14 @@ This is an example output.
     #>  0.3839286  0.3750000  2.0000000
 ```
  
-In the example above `nMax=2` so only 2 steps of BaB were applied for column-TDP, you can increase nMax for tighter bounds or leave it at the default of 100 or much higher for full refinement.
+In the example above `nMax=2` so only 2 steps of branch and bound were applied for column-TDP, you can increase nMax for tighter bounds or leave it at the default of 100 or much higher for full refinement.
 
 ```r
 #apply ocean function
-out <- ocean(mps = subpmat, gCT = gCT, nMax = 100)
+out <- ocean(mps = subpmat, gCT = gCT, scale=c("col"), nMax = 100)
 ```
 The results:
+
 ```
     #> p-categories matrix for columns ready. 
     #> Running BaB for column-*TDP*... 
@@ -105,7 +125,8 @@ The results:
     #>  cHeuristic      cBound       nStep 
     #>   0.3839286   0.3750000 100.0000000
 ```
- 
+and since we were only refining the column-TDP, we have set the scale as `scale=c("col")`.
+
 ## Omics Data
 
 In practice, you may start with raw data. 
