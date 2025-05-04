@@ -63,4 +63,5 @@ simesCT<-function(om1, om2, mps, m, alpha=0.05){
   #remove large objects
   gc()
 
-  return(c("grandH"=grandH,"concP"=concP,"z"=z,"alpha"=alpha, "m"=m) )}
+  return(c("grandH"=grandH,"concP"=concP,"z"=z,"alpha"=alpha, "m"=m) )
+}
