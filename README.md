@@ -15,7 +15,7 @@ OCEAN is a flexible feature set testing method for analysis of multi-omics. For 
 You can install the development version of OCEAN from
 [GitHub](https://github.com/) with:
 
-``` r
+```{r}
 install.packages("devtools")
 
 #install the package from GitHub
@@ -23,7 +23,7 @@ devtools::install_github("mitra-ep/rOCEAN")
 ```
 Also, a CRAN version is currently available, which can be installed using:
 
-``` r
+```r
 install.packages("rOCEAN")
 
 ```
@@ -32,7 +32,7 @@ install.packages("rOCEAN")
 To help you get started, here’s how to simulate a very simple and small dataset of p-values that you can use to test the functions of package.
 This code generates a 1200 x 1000 matrix of p-values, with some signal intentionally added.
 
-``` r
+```r
 #number of feature per omic data set
 n_cols<-1000
 n_rows<-1200
@@ -46,10 +46,11 @@ pvalmat<-matrix(runif(n_rows*n_cols, min=0, max=1)^3, nrow=n_rows, ncol=n_cols)
 
 Step one is to calculate the closed testing parameters:
 
-```{r}
+```r
 library(rOCEAN)
 gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat))
 ```
+
 The simesCT() function calculates five key parameters needed for downstream *TDP* estimation. For more details on these parameters, see:
 Meijer, R. J., & Goeman, J. J. (2019). *Hommel’s procedure in linear time*. _Biometrika_, **106**(2), 483–489. [https://doi.org/10.1093/biomet/asz006](https://doi.org/10.1093/biomet/asz006)
 
@@ -60,7 +61,7 @@ These parameters are independent of any specific feature set and only need to be
 Now using the simulated p-value matrix, you can test the core functionality of rOCEAN based on a small two-way feature set.
 Following code estimates the true discovery proportion (TDP) at three levels, for the given feature set:
 
-```{r}
+```r
 library(rOCEAN)
 #define a two-way feature set
 subpmat <- pvalmat[1:40, 10:75]
@@ -91,19 +92,19 @@ This is an example output.
  
 In the example above `nMax=2` so only 2 steps of BaB were applied for column-TDP, you can increase nMax for tighter bounds or leave it at the default of 100 or much higher for full refinement.
 
-```{r}
+```r
 #apply ocean function
 out <- ocean(mps = subpmat, gCT = gCT, nMax = 100)
 ```
 The results:
-```r
+:::
     #> p-categories matrix for columns ready. 
     #> Running BaB for column-*TDP*... 
     #> column-*TDP* done.
     #> $Columns
     #>  cHeuristic      cBound       nStep 
     #>   0.3839286   0.3750000 100.0000000
- ```
+:::
  
 ## Omics Data
 
@@ -129,7 +130,7 @@ In the context of rOCEAN, we use predefined lists of features that belong to a p
 
 Now lets see some example code:
 
-```{r}
+```r
 #load omics datasets
 load("PATH_TO_DATA/omics1.RData")
 load("PATH_TO_DATA/omics2.RData")
@@ -142,7 +143,7 @@ Once more, note that this is only done once for each pair of omics data.
 Depending on the size of your data and your hardware, this step may take considerable time to complete. For large datasets, consider using a pre-computed $p$-value matrix and applying threshold.
 If pvalmat is the pre-computed $p$-value matri, then using the following can speed up the calculation.
 
-```{r}
+```r
 spvalmat<-as.vector(pvalmat[pvalmat<0.05])
 gCT<-simesCT(mps=pvalmat, m=nrow(pvalmat)*ncol(pvalmat)
 ```
@@ -150,7 +151,7 @@ Note that if the thresholded matrix is used, m is non-optional to pass the origi
 
 The next step is estimation of *TDP*s.
 
-```{r}
+```r
 #load feature sets
 load("PATH_TO_LISTS/featureSet1.RData")
 load("PATH_TO_LISTS/featureSet2.RData")
