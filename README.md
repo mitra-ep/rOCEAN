@@ -15,7 +15,7 @@ OCEAN is a flexible feature set testing method for analysis of multi-omics. For 
 You can install the development version of OCEAN from
 [GitHub](https://github.com/) with:
 
-```{r}
+```r
 install.packages("devtools")
 
 #install the package from GitHub
@@ -70,7 +70,7 @@ subpmat <- pvalmat[1:40, 10:75]
 out <- ocean(mps = subpmat, gCT = gCT, nMax = 2)
 ```
 This is an example output. 
-:::
+```
     #> pair-TDP done. 
     #> p-categories matrix for rows ready. 
     #> row-TDP done. 
@@ -88,7 +88,7 @@ This is an example output.
     #> $Columns
     #> cHeuristic     cBound      nStep 
     #>  0.3839286  0.3750000  2.0000000
-:::
+```
  
 In the example above `nMax=2` so only 2 steps of BaB were applied for column-TDP, you can increase nMax for tighter bounds or leave it at the default of 100 or much higher for full refinement.
 
@@ -97,14 +97,14 @@ In the example above `nMax=2` so only 2 steps of BaB were applied for column-TDP
 out <- ocean(mps = subpmat, gCT = gCT, nMax = 100)
 ```
 The results:
-:::
+```
     #> p-categories matrix for columns ready. 
     #> Running BaB for column-*TDP*... 
     #> column-*TDP* done.
     #> $Columns
     #>  cHeuristic      cBound       nStep 
     #>   0.3839286   0.3750000 100.0000000
-:::
+```
  
 ## Omics Data
 
