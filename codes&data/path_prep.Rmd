@@ -1,0 +1,359 @@
+---
+title: "Pathways for breast cancer and colon cancer data"
+author: "ME"
+date: "12-April-2022/10-Dec-2023"
+output: pdf_document
+---
+
+```{r func}
+
+library(dplyr)
+
+#saved files
+setwd("path_to_save_files")
+
+```
+
+# Prep data BC
+
+```{r data , eval=FALSE}
+#original data
+load("/path_to_files/data_exp_breast.RData")
+
+load("/path_to_files/data_CN_breast.RData")
+
+###clear data sets and save names and chr and start
+expdat<-data.exp[,-c(1,2,3)]
+NAMexp<-data.exp[,c(1,2,3)]
+NAMexp$ProbeID<-as.character(NAMexp$ProbeID)
+
+###filter data sets
+cndat<-data.snp[,-c(1,2,3)]
+NAMcp<-data.snp[,c(1,2,3)]
+NAMcp$SNPid<-as.character(NAMcp$SNPid)
+
+###check match
+#identical(colnames(expdat),colnames(cpdat))
+
+#remove original files
+rm(data.exp,data.snp)
+```
+
+# CT object
+
+```{r CT , eval=FALSE}
+load("/path_to_files/CT_breast.RData")
+
+gCT<-c(CT,as.numeric(nrow(expdat))*as.numeric(nrow(cndat)))
+
+save(gCT,file="gCT.RData")
+
+```
+
+# Generate hallmark Gene list
+
+```{r hallpath , eval=FALSE}
+
+# hall mark geneset
+library("msigdbr")
+hall_gene_sets<- msigdbr(species="human", category="H")
+
+load("Prob2ENS.RData")
+#create the pathways
+
+#all hall mark names
+pathnames<-unique(hall_gene_sets$gs_name)
+
+#all probeIDs from data-set
+datagil<-unique(NAMexp$ProbeID)
+
+#empty lists
+hallpath<-list()
+#dathallList<-list()
+
+for(i in 1:length(pathnames)){
+  
+  #ENS for each path
+  ensmatch<-hall_gene_sets$ensembl_gene[which(hall_gene_sets$gs_name==pathnames[i])]
+  #path by agil
+  agilmatch<-mapProb2ensembl$agilent_wholegenome[which(mapProb2ensembl$ensembl_gene_id %in% ensmatch)]
+
+  datamatch<-agilmatch[which(agilmatch %in% datagil)]
+
+  hallpath[[i]]<-datamatch
+
+}
+
+names(hallpath)<-pathnames
+#save(hallpath,file="pathHall.RData")
+
+
+rm(hall_gene_sets,pathnames,datagil,datamatch,agilmatch,ensmatch)
+
+```
+
+# Generate chromosom arm list
+
+```{r ch_arm , eval=FALSE}
+
+load("/path_to_files/chrom_table_updated.RData")
+chr_arm<-chrom.table
+
+charmlist<-list()
+
+for(i in 1:nrow(chr_arm)){
+
+  #SNPs in arm
+  charmlist[[i]]<-NAMcp$SNPid[which(NAMcp$chr==chr_arm$chr[i] &
+                                      NAMcp$start>chr_arm$start[i] &
+                                      NAMcp$start<chr_arm$end[i])]
+  }
+
+names(charmlist)<-rownames(chr_arm)
+charmlist<-charmlist[lapply(charmlist,length)>0]
+#save(charmlist,file="pathArm.RData")
+
+```
+
+## List
+
+```{r , eval=FALSE}
+
+allarm<-expand.grid(1:length(hallpath),1:length(charmlist))
+colnames(allarm)<-c("pexp","pcn")
+allarm$SizeExp<-sapply(allarm$pexp, function(r) length(hallpath[[r]]) )
+allarm$SizeArm<-sapply(allarm$pcn,function(r) length(charmlist[[r]]) )
+
+allarm<-allarm[order(allarm$SizeArm+allarm$SizeExp),]
+
+#save(allarm,file="allarm.RData")
+
+```
+
+# Generate chromosom band list
+
+```{r chr_band , eval=FALSE}
+
+load("/path_to_files/chrom.table.rda")
+
+chr_bd<-chrom.table
+
+chbdlist<-list()
+
+for(i in 1:nrow(chr_bd)){
+
+  #SNPs in band
+  chbdlist[[i]]<-NAMcp$SNPid[which(NAMcp$chr==chr_bd$chr[i] &
+                                      NAMcp$start>chr_bd$start[i] &
+                                      NAMcp$start<chr_bd$end[i])]
+  
+  }
+
+names(chbdlist)<-paste0("ch",chr_bd$chr,"_",chr_bd$arm, "_",chr_bd$band)
+chbdlist<-chbdlist[lapply(chbdlist,length)>2]
+#save(chbdlist,file="pathCB.RData")
+```
+
+## List
+
+```{r , eval=FALSE}
+
+allband<-expand.grid(1:length(hallpath),1:length(chbdlist))
+colnames(allband)<-c("pexp","pcn")
+allband$SizeExp<-sapply(allband$pexp, function(r) length(hallpath[[r]]) )
+allband$SizeBand<-sapply(allband$pcn,function(r) length(chbdlist[[r]]) )
+
+allband<-allband[order(allband$SizeBand+allband$SizeExp),]
+
+#save(allband,file="allband.RData")
+
+```
+
+# Generate SNP loc list
+
+```{r snp_loc , eval=FALSE}
+
+cnpathlist<-list()
+for(s in 1:length(hallpath)){
+  #Gen the rows related to the path
+  GNs<-hallpath[[s]]
+  exsub<-NAMexp[which(NAMexp$ProbeID %in% GNs),]
+  cnids<-c()
+  #loop through the list and choose closest CN
+  for(g in 1:nrow(exsub)){
+    dist<-NAMcp$start-exsub$Start[g]
+    cnids[g]<-NAMcp$SNPid[which.min(dist[dist>0])]
+  }
+  cnpathlist[[s]]<-cnids
+}
+
+names(cnpathlist)<-paste("cn",names(hallpath),sep = "_")
+cnpathlist<-cnpathlist[lapply(cnpathlist,length)>0]
+cnpathlist<-lapply(cnpathlist,unique)
+save(cnpathlist,file="cnlpathlist.RData")
+
+```
+
+## List
+
+```{r , eval=FALSE}
+#cnl=copy number location
+allcnl<-data.frame(pexp=1:50,pcn=1:50)
+colnames(allcnl)<-c("pexp","pcn")
+allcnl$SizeExp<-sapply(allcnl$pexp, function(r) length(hallpath[[r]]) )
+allcnl$SizeCN<-sapply(allcnl$pcn,function(r) length(cnpathlist[[r]]) )
+
+rownames(allcnl)<-names(cnpathlist)
+allcnl<-allcnl[order(allcnl$SizeCN+allcnl$SizeExp),]
+
+#rownames(allcnl)<-names
+
+save(allcnl,file="allcnl.RData")
+
+```
+
+# Prep data Colon
+
+```{r data_colon , eval=FALSE}
+#original data
+load("/path_to_files/data_exp_colon.RData")
+load("/path_to_files/data_CN_colon.RData")
+
+###clear data sets and save names and chr and start
+expdat<-data.exp[,-c(1,2,3)]
+NAMexp<-data.exp[,c(1,2,3)]
+NAMexp$ProbeID<-as.character(NAMexp$ProbeID)
+
+###filter data sets
+cndat<-data.snp[,-c(1,2,3)]
+NAMcp<-data.snp[,c(1,2,3)]
+NAMcp$SNPid<-as.character(NAMcp$SNPid)
+
+###check match
+#identical(colnames(expdat),colnames(cpdat))
+
+#remove original files
+rm(data.exp,data.snp)
+
+```
+
+# Generate hallmark Gene list
+
+```{r hallpath_colon}
+
+# hall mark geneset
+library("msigdbr")
+hall_gene_sets<- msigdbr(species="human", category="H")
+
+load("Prob2ENS.RData")
+#create the pathways
+
+#all hall mark names
+pathnames<-unique(hall_gene_sets$gs_name)
+
+#all probeIDs from data-set
+datagil<-unique(NAMexp$ProbeID)
+
+#empty lists
+hallpath<-list()
+#dathallList<-list()
+
+for(i in 1:length(pathnames)){
+  
+  #ENS for each path
+  ensmatch<-hall_gene_sets$ensembl_gene[which(hall_gene_sets$gs_name==pathnames[i])]
+  #path by agil
+  agilmatch<-mapProb2ensembl$agilent_wholegenome[which(mapProb2ensembl$ensembl_gene_id %in% ensmatch)]
+
+  datamatch<-agilmatch[which(agilmatch %in% datagil)]
+
+  hallpath[[i]]<-datamatch
+
+}
+
+names(hallpath)<-pathnames
+save(hallpath,file="pathHallcolon.RData")
+
+
+rm(hall_gene_sets,pathnames,datagil,datamatch,agilmatch,ensmatch)
+
+```
+
+# Generate chromosom arm list
+
+```{r ch_arm_colon}
+
+load("/path_to_files/chrom_table_updated.RData")
+chr_arm<-chrom.table
+
+charmlist<-list()
+
+for(i in 1:nrow(chr_arm)){
+
+  #SNPs in arm
+  charmlist[[i]]<-NAMcp$SNPid[which(NAMcp$chr==chr_arm$chr[i] &
+                                      NAMcp$start>chr_arm$start[i] &
+                                      NAMcp$start<chr_arm$end[i])]
+  }
+
+names(charmlist)<-rownames(chr_arm)
+charmlist<-charmlist[lapply(charmlist,length)>0]
+save(charmlist,file="pathArmcolon.RData")
+
+```
+
+## List
+
+```{r}
+
+allarm<-expand.grid(1:length(hallpath),1:length(charmlist))
+colnames(allarm)<-c("pexp","pcn")
+allarm$SizeExp<-sapply(allarm$pexp, function(r) length(hallpath[[r]]) )
+allarm$SizeArm<-sapply(allarm$pcn,function(r) length(charmlist[[r]]) )
+
+allarm<-allarm[order(allarm$SizeArm+allarm$SizeExp),]
+
+save(allarm,file="allarmcolon.RData")
+
+```
+
+# Generate chromosom band list
+
+Limited to 13q and 20q arm.
+
+```{r chr_band_colon}
+
+load("/path_to_files/chrom.table.rda")
+
+chr_bd<-chrom.table
+chr_bd<-chr_bd[intersect(which(chr_bd$chr %in% c("13","20")),                 which(chr_bd$arm=="q")),]
+chbdlist<-list()
+
+for(i in 1:nrow(chr_bd)){
+  
+  #SNPs in band
+  chbdlist[[i]]<-NAMcp$SNPid[which(NAMcp$chr==chr_bd$chr[i] &
+                                     NAMcp$start>chr_bd$start[i] &
+                                     NAMcp$start<chr_bd$end[i])]
+  
+}
+
+names(chbdlist)<-paste0("ch",chr_bd$chr,"_",chr_bd$arm, "_",chr_bd$band)
+chbdlist<-chbdlist[lapply(chbdlist,length)>2]
+save(chbdlist,file="pathCBcolon.RData")
+```
+
+## List
+
+```{r}
+
+allband<-expand.grid(1:length(hallpath),1:length(chbdlist))
+colnames(allband)<-c("pexp","pcn")
+allband$SizeExp<-sapply(allband$pexp, function(r) length(hallpath[[r]]) )
+allband$SizeBand<-sapply(allband$pcn,function(r) length(chbdlist[[r]]) )
+
+allband<-allband[order(allband$SizeBand+allband$SizeExp),]
+
+save(allband,file="allbandcolon.RData")
+
+```
