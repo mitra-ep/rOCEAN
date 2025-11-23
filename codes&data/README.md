@@ -1,6 +1,6 @@
 # Real data example from paper
 
-## This repository includes:
+This repository includes:
 
 * Preprocessed TCGA datasets
 * Closed testing (CT) parameter calculation
