@@ -43,7 +43,7 @@ Below is a list of these pathway files along with a short description:
 
 ### Run the codes for each analysis
 
-The analysis was performed on a cluster computer. The R scripts are designed such that the code is looped over every
+The analysis was performed on a cluster computer with R version 4.0.2. The R scripts are designed such that the code is looped over every
 two-way feature set, using the loop identifier "r," in the code.
 The lists of two-way feature sets are saved separately to make the loop traceable:
 
