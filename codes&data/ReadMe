@@ -1,45 +1,56 @@
 # Real data example from paper
 
-## Structure
+## This repository includes:
 
-This folder includes all data and codes to reproduce the results in cluded in the main article.
+* Preprocessed TCGA datasets
+* Closed testing (CT) parameter calculation
+* Feature-set preparation scripts
+* Analysis scripts
 
 ## Steps to recreate the results
 
 ### Prepare the data
-The data are downloaded form TCGA Research Network and have been preprocessed based on the steps descriped in section 6 of the paper.
-The following are the preprocessed data in .RData format
-- Breat cancer expression data: data_exp_breast_P1 & data_exp_breast_P2 (must be combined before analysis, splited due to size limitation of github)
-- Breat cancer DNA CN data: data_CN_breast
+The data are downloaded from the TCGA Research Network and have been preprocessed based on the steps described in Section 6 of the paper.
+The following are the preprocessed data in .RData format:
+
+- Breast cancer expression data: data_exp_breast_P1 & data_exp_breast_P2
+(must be combined before analysis; split due to GitHub size limitations)
+- Breast cancer DNA CN data: data_CN_breast
 - Colorectal cancer expression data: data_exp_colon
 - Colorectal cancer DNA CN data: data_CN_colon
 
-### Create the closed testing parameters file
-As mentioned in the paper, these parameters are unique for each datas and are dependent from feature-sets used.
-It is rather straight forwars to calculate them using the simesCT function in the rOCEAN R-Package.
-Both the code and output are availbe:
-- runSimes_BC.Rmd: CT parameters for breast cancer data, results saved as gCT.RData
-- runSimes_VC.Rmd: CT parameters for colorectal cancer data, results saved as gCT_colon.RData
+### Create the closed testing parameters
+
+As mentioned in the paper, closed testing parameters are unique for each dataset and depend on the feature sets used.
+It is straightforward to calculate them using the `simesCT` function in the `rOCEAN` R-package.
+Both the code and output are available:
+
+* `runSimes_BC.Rmd`: CT parameters for breast cancer data, results saved as `gCT.RData`
+* `runSimes_VC.Rmd`: CT parameters for colorectal cancer data, results saved as `gCT_colon.RData`
 
 ### Prepare the feature-set
-Feature-set are created using different R packages, and then refined to only inlude the probs from the relevant datasets above. 
-The codes for these steps are included in the 'path_prep.Rmd' file. Note that these pathways are regulrly updated, so the 
-feature-set files used in the paper are also availble here for reproducibility.
-Below is a list of these pathways files along with a short description:
-- chrom.table.rda and chrom_table_updated.RData: chromosom list along with chromosom arm and relevan locations.
-- pathHall.RData: Hallmark pathways refined for breast cancer data (expression)
-- pathArm.RData: chromosome arms refined for breast cancer data (CN) 
-- pathHallcolon.RData: Hallmark pathways refined for colorectal cancer data (expression)
-- pathArmcolon.RData: chromosome arms refined for colorectal cancer data (CN) 
+Feature sets are created using different R packages and then refined to include only the probes from the relevant datasets listed above.
+The codes for these steps are included in the `path_prep.Rmd` file. Note that these pathways are regularly updated, so the feature-set files used in the paper are also available here for reproducibility.
+Below is a list of these pathway files along with a short description:
+
+- `chrom.table.rda` and `chrom_table_updated.RData`: chromosome list along with chromosome arms and relevant locations
+- `pathHall.RData`: Hallmark pathways refined for breast cancer expression data
+- `pathArm.RData`: chromosome arms refined for breast cancer CN data
+- `pathCB.RData`: chromosome bands refined for breast cancer CN data
+- `pathHallcolon.RData`: Hallmark pathways refined for colorectal cancer expression data
+- `pathArmcolon.RData`: chromosome arms refined for colorectal cancer CN data
+- `pathCBcolon.RData`: chromosome bands refined for colorectal cancer CN dat
 
 ### Run the codes for each analysis
-The analysis was done in a cluster computer, and the R codes are designed such that the code is
-looped for every two-way feature-set, this loop identifier is "r," in the codes.
-The list of two-way feture sets are saved seperately to make the loop tracible:
-- breast cancer hallmark pathways by chrosom arm bc_arm.R loops over allarm.RData
 
+The analysis was performed on a cluster computer. The R scripts are designed such that the code is looped over every
+two-way feature set, using the loop identifier "r," in the code.
+The lists of two-way feature sets are saved separately to make the loop traceable:
 
-
+- Breast cancer hallmark pathways by chromosome arm: `bc_arm.R`, looping over `allarm.RData`
+- Breast cancer hallmark pathways by chromosome band: `bc_band.R`, looping over `allband.RData`
+- Colorectal cancer hallmark pathways by chromosome arm: `cc_arm.R`, looping over `allarmcolon.RData`
+- Colorectal cancer hallmark pathways by chromosome band (selected items): `cc_band.R`, looping over `allbandcolon.RData`
 
 
 
